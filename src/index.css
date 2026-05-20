@@ -1,0 +1,276 @@
+/* ================================================================
+   BEACON DESIGN SYSTEM — Tokens & Primitives
+   ================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap");
+
+/* -- Reset -- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+ul,
+ol {
+  list-style: none;
+}
+
+/* ================================================================
+   COLOR TOKENS — Dark mode default
+   ================================================================ */
+
+:root {
+  /* Surface */
+  --bg-0: #000000;
+  --bg-1: #09090b;
+  --bg-2: #111113;
+  --bg-3: #1a1a1e;
+  --bg-4: #222226;
+
+  /* Text */
+  --text-primary: #f7f7f7;
+  --text-secondary: #a1a1a6;
+  --text-tertiary: #5c5c63;
+  --text-quaternary: #3e3e44;
+
+  /* Border */
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --border-focus: rgba(49, 131, 122, 0.4);
+
+  /* Accent (Teal) */
+  --accent: #31837a;
+  --accent-hover: #3a9a90;
+  --accent-muted: rgba(49, 131, 122, 0.1);
+  --accent-subtle: rgba(49, 131, 122, 0.06);
+
+  /* Semantic */
+  --success: #30e584;
+  --success-muted: rgba(48, 229, 132, 0.1);
+  --warning: #f5a524;
+  --warning-muted: rgba(245, 165, 36, 0.1);
+  --danger: #ff5353;
+  --danger-muted: rgba(255, 83, 83, 0.1);
+  --info: #6cb4ee;
+  --info-muted: rgba(108, 180, 238, 0.1);
+
+  /* Chart Colors */
+  --chart-blue: #31837a;
+  --chart-green: #30e584;
+  --chart-amber: #ffdb45;
+  --chart-coral: #ff5353;
+  --chart-purple: #ff3473;
+  --chart-teal: #3cefa3;
+  --chart-orange: #ff8f4a;
+
+  /* CTA */
+  --cta-bg: #f7f7f7;
+  --cta-text: #09090b;
+  --cta-bg-hover: #ffffff;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+
+  /* Typography */
+  --font-sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+    sans-serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --header-height: 56px;
+  --max-width: 1280px;
+}
+
+/* ================================================================
+   LIGHT MODE OVERRIDES
+   ================================================================ */
+
+[data-theme="light"] {
+  --bg-0: #fbfcfa;
+  --bg-1: #ffffff;
+  --bg-2: #f1f3f0;
+  --bg-3: #e8eae7;
+  --bg-4: #d4d4d8;
+
+  --text-primary: #121214;
+  --text-secondary: #24343c;
+  --text-tertiary: #5a666b;
+  --text-quaternary: #7b858a;
+
+  --border: rgba(16, 31, 40, 0.14);
+  --border-hover: rgba(16, 31, 40, 0.24);
+  --border-focus: rgba(49, 131, 122, 0.4);
+
+  --accent: #31837a;
+  --accent-hover: #3a9a90;
+  --accent-muted: rgba(49, 131, 122, 0.13);
+  --accent-subtle: rgba(49, 131, 122, 0.06);
+
+  --stroke: rgba(16, 31, 40, 0.34);
+  --stroke-soft: rgba(16, 31, 40, 0.24);
+  --accent-soft: rgba(49, 131, 122, 0.13);
+
+  --success: #16a34a;
+  --success-muted: rgba(22, 163, 74, 0.08);
+  --warning: #b18a00;
+  --warning-muted: rgba(177, 138, 0, 0.08);
+  --danger: #7a3333;
+  --danger-muted: rgba(122, 51, 51, 0.08);
+  --info: #31837a;
+  --info-muted: rgba(49, 131, 122, 0.08);
+
+  --gold: #b18a00;
+  --rust: #7a3333;
+
+  --cta-bg: #09090b;
+  --cta-text: #fafafa;
+  --cta-bg-hover: #27272a;
+
+  --rim:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    inset 0 -1px 0 rgba(16, 31, 40, 0.1), inset 0 0 0 1px rgba(16, 31, 40, 0.14);
+  --accent-rim: inset 0 -12px 24px rgba(49, 131, 122, 0.1);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 28px 80px rgba(16, 31, 40, 0.16);
+}
+
+/* ================================================================
+   BASE STYLES
+   ================================================================ */
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-0);
+  color: var(--text-primary);
+  font-size: 14px;
+  letter-spacing: -0.006em;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-4);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* ================================================================
+   UTILITY CLASSES
+   ================================================================ */
+
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+.text-accent {
+  color: var(--accent);
+}
+.text-success {
+  color: var(--success);
+}
+.text-warning {
+  color: var(--warning);
+}
+.text-danger {
+  color: var(--danger);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+.font-medium {
+  font-weight: 500;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.font-bold {
+  font-weight: 700;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

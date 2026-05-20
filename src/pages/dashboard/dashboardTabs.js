@@ -1,0 +1,32 @@
+import {
+  Home,
+  BarChart3,
+  ListTodo,
+  Mail,
+  Wrench,
+  Activity,
+  Bot,
+  AlertTriangle,
+  CreditCard,
+  Users,
+  Gift,
+  Settings,
+} from 'lucide-react'
+
+export const DASHBOARD_TABS = [
+  { section: 'Dashboard' },
+  { id: 'home', label: 'Home', icon: Home },
+  { id: 'score', label: 'AI Visibility Score', icon: BarChart3, badge: '31' },
+  { id: 'queue', label: 'Action Queue', icon: ListTodo, badge: '5' },
+  { id: 'digest', label: 'Weekly Digest', icon: Mail },
+  { id: 'fix', label: 'First Fix', icon: Wrench },
+  { id: 'daily', label: 'Daily Loop', icon: Activity },
+  { id: 'autopilot', label: 'Autopilot', icon: Bot },
+  { id: 'recovery', label: 'Recovery', icon: AlertTriangle },
+  { divider: true },
+  { section: 'Account' },
+  { id: 'pricing', label: 'Pricing', icon: CreditCard },
+  { id: 'team', label: 'Team', icon: Users },
+  { id: 'referral', label: 'Referral', icon: Gift },
+  { id: 'settings', label: 'Settings', icon: Settings },
+]

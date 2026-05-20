@@ -1,0 +1,1442 @@
+Beacon — UX & PLG User Flows
+v0.1 — UX/UI + Product-Led Growth SpecCompanion to: Beacon PRD v0.1
+1. Approach & Operating Principles
+This document speciﬁes the user ﬂows that turn the Beacon product spec into a working PLG
+product. Two perspectives are covered:
+1. Customer-facing ﬂows — what Mike (owner) and his oﬃce manager experience from ﬁrst
+touch through expansion and renewal.
+2. Internal admin ﬂows — what the Beacon team (operations, customer success, content
+review, billing) experiences running the platform.
+Every ﬂow is documented with: goal, entry trigger, step-by-step screen ﬂow, mobile-ﬁrst
+wireframe of the critical screen, PLG levers, failure modes and recovery, and the event
+instrumentation needed to measure it.
+PLG framework guiding every customer ﬂow
+Principle What it means in Beacon
+Time-to-Value < 2 minutes Owner sees their AI Visibility Score before they ﬁnish their coﬀee
+Concrete value before payment Free audit produces a real, personalized score; ﬁrst ﬁx free
+Self-serve activation, assisted
+only when stuck
+No mandatory onboarding call; CSM intervenes only on explicit
+signal
+Progressive disclosure First week: one button (approve). Month three: full power-user
+capability available but not required
+Earned automation Approval mode default; autopilot oﬀered only after trust signals
+ﬁre
+Compound habit, not dashboard
+fatigue
+Weekly SMS digest replaces the "log in and check" model
+Reversibility everywhere Every published change has a one-tap revert; cancellation never
+destroys shipped assets
+
+Principle What it means in Beacon
+Distribution baked into the
+product
+Score certiﬁcate, peer-comparison, agency white-label all live
+inside the product
+UX principles guiding every screen
+1. Two screens. Home + Action Queue. Everything else is sub-views.
+2. One number on Home. AI Visibility Score, big, with a 30-day sparkline.
+3. No jargon, ever. "How often AI mentions you," not "share of voice."
+4. Big tap targets. Mike approves from his phone with grease on his hands.
+5. Single-color status. Green (working), yellow (needs attention), red (broken).
+6. Mobile-ﬁrst PWA. Native-app feel, web cost.
+7. Undo > Conﬁrm. A revert button beats ﬁve conﬁrmation dialogs.
+2. Personas & State Deﬁnitions
+Customer-side personas
+Persona Role Where they live in the product
+Mike (Owner) Buyer, decision-maker, license
+holder
+Home screen, weekly digest, billing,
+approval queue
+Sarah (Oﬃce
+Manager)
+Day-to-day operator, often the
+"champion"
+Approval queue, review reply, weekly
+report
+Field Tech (rare) Receives review-request links via
+SMS
+Mobile job-complete trigger only
+Internal-side personas
+Persona Role Where they live
+Operations Lead Customer health, churn, expansion Customer Health Dashboard,
+churn alerts
+Content
+Reviewer
+First 30 days of every customer; ongoing low-
+conﬁdence items
+Content Review Queue
+
+Persona Role Where they live
+CSM (post-
+MVP)
+Pro+ customer relationships Account view, QBR notes,
+expansion playbook
+Support Tier-1 tickets Inbox + macros
+Agency Admin
+(V2)
+Marketing agency reselling Beacon Multi-tenant admin
+Customer lifecycle states
+Each state has a deﬁnition, an entry event, and an exit/promotion event:
+Visitor ── ▶  Audit Completed ── ▶  Trialing ── ▶  Activated ── ▶  Paid ── ▶  Habituated ── ▶
+Autopilot ── ▶  Expanded
+│
+▼
+At-Risk ── ▶  Churned / Won-Back
+
+State Deﬁnition Entry event Promotion event
+Visitor Landed on
+beacon.app
+pageview_landing audit_started
+Audit
+Completed
+Saw their AI
+Visibility Score
+audit_completed signup_started
+Trialing Signed up, in
+14-day Pro free
+trial
+trial_started first_fix_shipped
+Activated Approved +
+shipped at least
+one ﬁx
+first_fix_shipped payment_method_added
+Paid Billing live,
+subscription
+active
+subscription_active weekly_digest_opened_4_weeks
+Habituated Engaged with
+weekly digest 4
+weeks running
+digest_streak_4 autopilot_enabled
+Autopilot Owner toggled
+on full
+autonomy
+autopilot_enabled tier_upgraded OR
+referral_sent
+Expanded Upgraded tier
+or invited team
+member
+tier_upgraded OR
+seat_added
+—
+At-Risk Score plateau,
+missed digests,
+low approval
+health_score_yellow back to Habituated OR Churned
+Churned Subscription
+canceled
+subscription_canceled winback_succeeded
+Every ﬂow below is mapped to one or more of these states.
+PART I — CUSTOMER-FACING FLOWS
+
+Flow 1 — The Free Audit (PLG Hook)
+State transition: Visitor → Audit Completed Goal: Convert anonymous traﬃc to a personalized,
+share-worthy result that creates buying intent. Entry trigger: Direct nav to beacon.app, paid ad,
+IEC chapter referral, or "audit your AI visibility" CTA from anywhere.
+Why this is the most important ﬂow in the product
+Without signup, without payment, without a dashboard — the audit produces a real,
+personalized AI Visibility Score that the contractor can immediately verify by typing the same
+prompts into ChatGPT himself. That veriﬁability is the entire conversion engine. Everything
+else ﬂows from this two-minute experience.
+Step-by-step
+Step 1 — Landing
+┌─────────────────────────────────────────────┐
+│  beacon.app                                 │
+│                                             │
+│  See how AI search engines describe         │
+│  your shop right now. Free, 90 seconds.     │
+│                                             │
+│  ┌───────────────────────────────────────┐  │
+│  │ Your Google Business Profile or shop  │  │
+│  │ name: Lone Star Electric, Plano TX    │  │
+│  └───────────────────────────────────────┘  │
+│                                             │
+│  [ See My AI Visibility Score → ]           │
+│                                             │
+│  ─────────────────────────────────          │
+│  No signup required.                        │
+│  No credit card. No spam.                   │
+└─────────────────────────────────────────────┘
+Step 2 — Auto-resolution (background, ~3 sec)
+• Pull GBP data via Places API
+• Pull website + sitemap
+• Detect services from GBP categories + website
+• Detect service area from GBP service-area zips
+• Identify top-3 competitors via Maps proximity + category match
+Step 3 — Confirmation (10 sec)
+
+┌─────────────────────────────────────────────┐
+│  Is this you?                               │
+│                                             │
+│  Lone Star Electric                         │
+│  3401 W 15th St, Plano TX 75075             │
+│  Electrical contractor • 4.7 ★  (87 reviews)  │
+│                                             │
+│  Top services we'll check for:              │
+│   ✓ Panel upgrade                           │
+│   ✓ EV charger install                      │
+│   ✓ Generator install                       │
+│   ✓ Electrical repair                       │
+│   ✓ Whole-home rewiring                     │
+│  [ + Add ] [ Edit ]                         │
+│                                             │
+│  We'll compare you against:                 │
+│   • Plano Electric Pros                     │
+│   • Reliable Electric of North Dallas       │
+│   • Bright Spark Electrical                 │
+│  [ Edit competitors ]                       │
+│                                             │
+│  [ Run My Audit → ]                         │
+└─────────────────────────────────────────────┘
+Step 4 — Live progress (~90 sec)
+┌─────────────────────────────────────────────┐
+│  Asking AI engines about you...             │
+│                                             │
+│  ✓ ChatGPT — "best electrician in Plano"    │
+│  ✓ Gemini — "panel upgrade Plano cost"      │
+│  ⟳  Perplexity — "EV charger install Plano"  │
+│  ⟳  ChatGPT — "emergency electrician Plano"  │
+│  ⟳  ...                                      │
+│                                             │
+│  ████████████ ░░░░░░  18 of 25 prompts        │
+│                                             │
+│  Did you know? 45% of homeowners now        │
+│  use ChatGPT to find local services.        │
+│  AI engines only recommend ~1.2% of         │
+│  local businesses.                          │
+└─────────────────────────────────────────────┘
+Step 5 — RESULTS (the aha)
+┌─────────────────────────────────────────────┐
+
+Key UX decisions (and why)
+Single input ﬁeld on landing. Lifted from Linear/Vercel. Anything more is friction. We can
+derive everything else from a Google Maps lookup.
+No signup before results. The result is the demo. If we gate it behind email, we lose 60% of
+audit completers. The signup happens after they see the gap.
+│  Your AI Visibility Score                   │
+│                                             │
+│     ┌───────┐                               │
+│     │  12   │  out of 100                   │
+│     └───────┘                               │
+│                                             │
+│  Out of 25 questions homeowners ask AI      │
+│  about electrical services in Plano:        │
+│                                             │
+│   ✓ You appeared in     2                   │
+│   – Partially mentioned 1                   │
+│   ✗ You were absent in 22                   │
+│                                             │
+│  ─────────────────────────────────          │
+│  Plano Electric Pros appeared in   8        │
+│  Bright Spark Electrical appeared in 6      │
+│                                             │
+│  ─────────────────────────────────          │
+│  Top 3 reasons you're losing:               │
+│                                             │
+│  1. Plano Electric has 12 FAQ pages         │
+│     covering panel, EV, generator. You      │
+│     have none.                              │
+│  2. Bright Spark has city-specific          │
+│     service pages for Plano, Frisco,        │
+│     Allen. You only have one generic page.  │
+│  3. Your GBP has no Q&A section. AI         │
+│     engines pull heavily from GBP Q&A.      │
+│                                             │
+│  ┌───────────────────────────────────────┐  │
+│  │ ▶  See all 25 prompts (free signup)    │  │
+│  │ ▶  Ship your first fix this week, free │  │
+│  └───────────────────────────────────────┘  │
+│                                             │
+│  [ Sign up free → ]    [ Email this to me ] │
+└─────────────────────────────────────────────┘
+
+Live progress with rotating "did you know" copy. Every second of waiting needs to build
+value. Educational copy doubles as soft pitch.
+Speciﬁc competitor names rendered. This is provocative — Mike feels the gap viscerally
+when he sees Lone Star vs. Bright Spark in numbers. Avoiding this is being too polite to
+convert.
+Reasons shown in plain language. "Plano Electric has 12 FAQ pages, you have none" — not
+"FAQ schema density delta of 0.84."
+Two CTAs. "Sign up free" is primary; "Email this to me" is the soft escape that still captures
+lead and creates a follow-up touchpoint.
+PLG levers
+Lever Mechanism
+Zero-friction ﬁrst-touch No signup required to see result
+Concrete personalized
+output
+Owner can verify any prompt in ChatGPT himself
+Emotional provocation Speciﬁc competitor names + numbers
+Soft commitment
+escalation
+"First ﬁx free" makes signup feel like collecting earned value
+Latent virality "Email this to me" → owner forwards to oﬃce manager / business partner /
+accountant
+Score certiﬁcate (V1.5) Shareable image: "My AI Visibility Score is 87. What's yours?" — viral on
+LinkedIn
+Failure modes & recovery
+Business not found in GBP. Show a manual entry form with website URL ﬁeld. Take 30 sec
+longer; works.
+No competitors auto-detected. Default to category-level competitors ("we'll compare you
+against the top 3 electrical contractors within 10 miles").
+All 3 LLM APIs slow or down. Use 24h-cached results; show "based on this morning's data"
+footnote. Never break the ﬂow.
+Owner gets a high score (>50). Reframe: "You're ahead — let's make you uncatchable."
+Same conversion, diﬀerent angle.
+
+Owner gets a very high score (>80). Honest framing: "You're in the top 1% already. We'd
+add maintenance and competitor watch — but you may not need us. Want to see what we'd
+do?"
+Events to instrument
+Success metrics
+Audit completion rate: target 75% (visitor → result)
+Audit → signup rate: target 25%
+Audit → email-capture rate: target 40% (combined funnel for nurture)
+Time-to-result: target <120 seconds
+Audit-shared rate: target 5% (viral coeﬃcient seed)
+Flow 2 — Signup → Onboarding → First Aha
+State transition: Audit Completed → Trialing → Activated Goal: Get to "ﬁrst ﬁx shipped" within
+48 hours of signup, ideally <24h. Entry trigger: "Sign up free" CTA from audit results.
+Step-by-step
+audit_landed                  { source, utm_*, device }
+audit_business_entered        { business_name, gbp_resolved: bool }
+audit_confirmed               { services_count, competitors_count }
+audit_running                 { prompt_count, engines: [...] }
+audit_completed               { score, time_to_complete_seconds }
+audit_results_viewed          { time_on_page_seconds }
+audit_signup_clicked          { from_section: 'cta' | 'banner' }
+audit_email_captured          { variant: 'send_to_self' }
+audit_shared                  { channel: 'linkedin' | 'sms' | 'email' }
+audit_competitor_swapped      { from_auto, to_manual }
+Step 1 — Account creation (15 sec)
+┌─────────────────────────────────────────────┐
+│  Create your Beacon account                 │
+│                                             │
+│  Continue with Google [G]    [or use email] │
+│                                             │
+│  We'll save the audit you just ran.         │
+│  No credit card needed for the next 14 days.│
+
+└─────────────────────────────────────────────┘
+Step 2 — One-screen confirmation (audit data pre-filled, 30 sec)
+┌─────────────────────────────────────────────┐
+│  Quick check — these are pre-filled from    │
+│  your audit. Edit anything that's wrong.    │
+│                                             │
+│  Business: Lone Star Electric          [ ✎ ] │
+│  Service area: Plano + 6 nearby zips   [ ✎ ] │
+│  Top services: 5 services              [ ✎ ] │
+│  Competitors tracked: 3                [ ✎ ] │
+│  Brand voice samples we'll learn from:      │
+│    ✓ 87 Google reviews                      │
+│    ✓ Your About Us page                     │
+│    ✓ 12 GBP posts from past 6 months        │
+│  [ Add more (LinkedIn, ads, voicemail) ]    │
+│                                             │
+│  ─────────────────────────────────          │
+│  Unlock your full radar (50 prompts).       │
+│  Then we'll ship your first fix free.       │
+│                                             │
+│  [ Run my full radar → ]                    │
+└─────────────────────────────────────────────┘
+Step 3 — Full radar runs (~90 sec, background)
+• All 50 prompts × 3 engines
+• Brand voice profile built from collected samples
+• Initial gap inventory generated
+Step 4 — Welcome to Home screen (the aha)
+• Score card animates in
+• Three "this week" cards populate
+• Top notification: "Your first fix is ready to review"
+Step 5 — First-Fix Preview (within 5 min of signup)
+┌─────────────────────────────────────────────┐
+│  Your first fix — free, ready to ship       │
+│                                             │
+│  WHAT WE'LL ADD                             │
+│  6 frequently-asked-question pairs to       │
+│  your panel-upgrade page.                   │
+│                                             │
+│  WHY THIS                                   │
+│  ChatGPT cited Plano Electric Pros for      │
+
+│  'panel upgrade Plano cost' — they have a   │
+│  detailed FAQ. You don't have one.          │
+│                                             │
+│  PREVIEW (in your voice)                    │
+│  ┌────────────────────────────────────────┐ │
+│  │ Q: How much does a 200-amp panel      │ │
+│  │ upgrade cost in Plano, TX?            │ │
+│  │                                        │ │
+│  │ A: In Plano and surrounding North     │ │
+│  │ Dallas suburbs, a 200-amp panel       │ │
+│  │ upgrade typically runs $2,800–$4,500, │ │
+│  │ depending on whether your home...     │ │
+│  │                                        │ │
+│  │ ...— Lone Star Electric, licensed     │ │
+│  │ Master Electrician, serving Plano     │ │
+│  │ since 2009.                           │ │
+│  └────────────────────────────────────────┘ │
+│  + 5 more FAQ pairs [ See all 6 ]           │
+│                                             │
+│  WHERE WE'LL PUBLISH                        │
+│   ✓ lonestarelectric.com/panel-upgrade      │
+│   ✓ Your Google Business Profile Q&A        │
+│  [ Change ]                                 │
+│                                             │
+│  ─────────────────────────────────          │
+│  Want us to first install our 1-line        │
+│  script tag on your site? 5 minutes.        │
+│                                             │
+│  [ Skip — manual paste ] [ Install now → ]  │
+└─────────────────────────────────────────────┘
+Step 6 — Schema script install (or skip)
+• Walkthrough screencast for WordPress / Webflow / Wix
+• For "other": copy-paste script tag, verify on site
+• Verification check confirms it's live
+Step 7 — Ship the first fix
+• Owner taps Approve
+• "Live in 5 minutes" loading screen
+• Confirmation: live URL + "We'll re-ask ChatGPT in 7 days"
+Step 8 — End of onboarding state
+• Lands on Home screen
+• Banner: " 🎉  First fix live. Your 14-day trial just started."
+
+Key UX decisions
+No "set up your account" multi-page wizard. Everything from the audit pre-ﬁlls. The
+signup is a single conﬁrmation screen.
+Brand voice samples are auto-collected from public sources. Owner can add private
+sources (LinkedIn, ads, voicemails) but nothing is required.
+First-ﬁx preview shows the actual content, not a placeholder. This is the credibility
+moment. If the FAQ sounds generic, we've lost the customer.
+Schema script install is oﬀered, not required. Skipping is ﬁne — the ﬁrst ﬁx can publish to
+GBP only. Site ﬁxes can wait until the script is installed.
+End-state is the Home screen, not "you're all set!" success page. Drop the user into the
+product, not a marketing wrapper.
+PLG levers
+Lever Mechanism
+Pre-ﬁlled wizard Reduces signup-to-aha to <90 seconds
+Free ﬁrst-ﬁx Inverted commitment — they receive value before they pay
+14-day trial without credit card Removes payment friction
+Brand voice from public sources Demonstrates product-aware sophistication; no extra work for
+owner
+Live URL after ﬁrst publish Owner can verify; shareable proof
+Banner on Home: "Trial just
+started"
+Transparency about state, no surprise charges
+Failure modes & recovery
+Owner abandons during radar load (90 sec). Send email + SMS in 5 min: "Your radar is
+ready — see your score." With deep link.
+First-ﬁx preview content sounds wrong. Edit-mode is rich text, not form-based. Allow
+inline edits with one-click "regenerate this paragraph."
+• "What's next" tooltip points to Action Queue: "We'll keep finding gaps.
+Approve them as they come."
+
+Owner refuses script install AND no GBP connected. Allow ﬁrst ﬁx to go to a Beacon-
+hosted preview page ([shop].beacon.site/panel-upgrade-plano) so they can see the
+asset and we can demonstrate value, even before they commit to publishing on their own
+site.
+Owner doesn't approve ﬁrst ﬁx within 24h. SMS reminder: "Your ﬁrst ﬁx is still ready. 30
+seconds to review and ship it."
+Owner doesn't approve ﬁrst ﬁx within 72h. CSM gets alert (Pro+ tier).
+Events to instrument
+Success metrics
+Signup → ﬁrst-ﬁx-shipped rate: target 70% within 48h
+Time to ﬁrst ﬁx (median): target <3 hours
+Schema-script install rate at onboarding: target 45% (acceptable to defer; not required for
+activation)
+Onboarding abandonment: target <15%
+Flow 3 — Daily Habit Loop (Passive)
+State: Activated → Habituated Goal: Continuous Score lift + content shipped without owner
+attention.
+This is not a ﬂow the owner does — it's a ﬂow that happens. The owner's only interaction is the
+weekly digest (Flow 4) and approval queue (Flow 5).
+What runs daily
+trial_started                 { source: 'audit' | 'direct' }
+onboarding_step_completed     { step: 1..7 }
+brand_voice_samples_added     { sources: [...], total_samples }
+schema_script_installed       { method: 'wordpress' | 'webflow' | 'wix' |
+'manual', verified: bool }
+first_fix_previewed           { time_since_signup_seconds }
+first_fix_edited              { paragraphs_changed }
+first_fix_approved            { time_since_signup_seconds }
+first_fix_shipped             { fix_type, channels: ['site', 'gbp'] }
+onboarding_abandoned          { last_completed_step, idle_seconds }
+2:00 AM   Visibility Radar runs (50 prompts × 3 engines for every active customer)
+
+The owner sees zero of this. The product is doing work overnight; he wakes up and the queue is
+fresh.
+Edge cases handled silently
+LLM API rate limits hit. Queue spills to next day; alert internal ops only if persistent.
+Customer's website is down. Skip site-publish actions; queue them for retry. Notify owner
+only if down for 48+ hours.
+GBP API quota hit. Spread posts across the week; never miss the cadence.
+A scheduled publish fails. Auto-retry 3 times over 48h; surface to internal queue if all fail.
+Flow 4 — Weekly Digest (The Habit)
+State: Habituated maintenance Goal: Replace the "log in and check" model with a passive 60-
+second weekly read. Entry trigger: Sunday 6 AM (conﬁgurable) — SMS + email send.
+The SMS
+The email (richer)
+2:30 AM   Citation parser: identifies who got cited for what
+3:00 AM   Gap diagnosis: for every gap, fetch competitor's source and run LLM diff
+4:00 AM   Fix generation: queued items pre-generated and brand-voice-checked
+6:00 AM   Score recomputation per customer
+6:30 AM   Day's queue ready for owner review (or autopilot publish)
+8:00 AM   Catchup: anything that didn't complete by 6 AM
+[SMS — Sunday 6:04 AM]
+Beacon weekly: Score 31 → 38 (+7).
+4 fixes shipped. You appeared in 3 new
+ChatGPT answers — incl. "best EV charger
+install in Plano." 5 fixes in queue.
+Tap to review: bcn.ai/w/aB3
+Subject: Lone Star Electric — AI Visibility +7 this week
+┌─────────────────────────────────────────────┐
+│  WEEK OF NOVEMBER 24, 2026                  │
+│                                             │
+│  Your AI Visibility Score                   │
+
+Key UX decisions
+SMS is the trigger; email is the depth. Most owners open the SMS ﬁrst; some click into
+│     31 ────── ▶  38   (+7 this week)          │
+│  ▁▂▂▃▄▄▅▅▆▆▇   (last 12 weeks)               │
+│                                             │
+│  ─────────────────────────────────          │
+│  WHAT WE SHIPPED                            │
+│   1. Added 6 FAQs to your panel-upgrade     │
+│      page                                   │
+│   2. Published a Frisco-specific service    │
+│      page (long-tail target)                │
+│   3. Replied to 4 reviews in your voice     │
+│   4. Refreshed your GBP Q&A section with    │
+│      8 entries                              │
+│                                             │
+│  WHERE YOU NOW APPEAR                       │
+│  • ChatGPT now mentions you for             │
+│    "best EV charger install in Plano"       │
+│  • Perplexity cites your panel-upgrade      │
+│    page directly in answers                 │
+│  • Gemini mentions you in 2 new prompts     │
+│                                             │
+│  WHAT'S QUEUED FOR NEXT WEEK                │
+│  • 3 service pages (Allen, McKinney,        │
+│    Wylie)                                   │
+│  • 4 review replies                         │
+│  • 1 weekly GBP post                        │
+│                                             │
+│  [ Approve all (1 tap) ]                    │
+│  [ Review individually ]                    │
+│                                             │
+│  ─────────────────────────────────          │
+│  Score breakdown:                           │
+│   Citation rate     12/50 (+3)              │
+│   Sentiment         strong                  │
+│   Share of voice    18% (+4%)               │
+│   Citation diversity 11 sources (+2)        │
+│                                             │
+│  Compared to your 3 tracked competitors,    │
+│  you're now ranked: #2 (was #4).            │
+└─────────────────────────────────────────────┘
+
+email. Both lead to the same web page.
+One number in the subject line. "+7 this week" — clear value signal.
+"Approve all" is a single tap. This is the engine of autopilot graduation.
+Competitor ranking shown. Triggers competitive emotion → drives engagement.
+No "ROI in dollars" framing in the digest itself. Reserve that for monthly business reviews
+— weekly digests should celebrate the work, not over-promise outcomes.
+PLG levers
+Lever Mechanism
+SMS over email 95%+ open rate vs. 25% for email
+Sunday morning send Oﬀ-hours read, calm context
+"+N this week" hook Concrete weekly progress
+One-tap approve all Major step toward autopilot
+Competitive ranking Emotional engagement → retention
+Failure modes & recovery
+Score went down this week. Honest framing: "Score 38 → 35 (-3). Two competitors shipped
+new content. We're working on it. Here's what we'll do this week." Trust > spin.
+No ﬁxes shipped this week. This shouldn't happen, but if it does: "Catching up on
+diagnostics. Full report next week." Internal alert ﬁres.
+Owner stopped reading digests. After 3 missed weeks: "We notice you haven't opened
+your digest. Want to switch to monthly? Or pause autopilot?" — proactive, not nagging.
+Events to instrument
+digest_sent                   { channel: 'sms' | 'email', score, score_delta }
+digest_opened                 { channel, time_to_open_minutes }
+digest_link_clicked           { destination: 'web' | 'approve' }
+digest_approve_all_tapped     { items_approved }
+digest_unsubscribed           { reason }
+digest_streak_4_weeks         (state transition event)
+
+Success metrics
+Digest open rate: target >80% (SMS) / >40% (email)
+Approve-all tap rate: target >50% of opens
+4-week digest streak: target >60% of paid customers (Habituated state)
+Flow 5 — Action Queue & Approval Flow
+State: Activated maintenance / Habituated Goal: Mike approves changes from his phone with
+grease on his hands. <30 sec per approval.
+Mobile screen — Action Queue
+┌─────────────────────────────────────────────┐
+│  ←  Action Queue                  Sort ▾     │
+│                                             │
+│  5 pending           1 high-priority        │
+│                                             │
+│  ┌─────────────────────────────────────┐   │
+│  │ 🔴  Reply to negative review          │   │
+│  │ Susan T., 2 stars, posted 14h ago    │   │
+│  │ "Tech showed up late, no call..."    │   │
+│  │ Our draft reply →                    │   │
+│  │ [ Preview ]  [ Approve ]  [ Edit ]   │   │
+│  └─────────────────────────────────────┘   │
+│                                             │
+│  ┌─────────────────────────────────────┐   │
+│  │ 🟢  Add 6 FAQs to panel-upgrade page  │   │
+│  │ Why: ChatGPT cited Plano Electric    │   │
+│  │ for "panel cost Plano" — not us      │   │
+│  │ [ Preview ]  [ Approve ]  [ Edit ]   │   │
+│  └─────────────────────────────────────┘   │
+│                                             │
+│  ┌─────────────────────────────────────┐   │
+│  │ 🟢  Publish service page: Frisco TX   │   │
+│  │ Long-tail: "EV charger install       │   │
+│  │ Frisco" — no current presence        │   │
+│  │ [ Preview ]  [ Approve ]  [ Edit ]   │   │
+│  └─────────────────────────────────────┘   │
+│                                             │
+│  ┌─────────────────────────────────────┐   │
+
+Tapping "Preview" on an item
+│  │ 🟢  GBP weekly post: AFCI explainer   │   │
+│  │ [ Preview ]  [ Approve ]  [ Edit ]   │   │
+│  └─────────────────────────────────────┘   │
+│                                             │
+│  ┌─────────────────────────────────────┐   │
+│  │ 🟢  Refresh About Us schema markup    │   │
+│  │ [ Preview ]  [ Approve ]  [ Edit ]   │   │
+│  └─────────────────────────────────────┘   │
+│                                             │
+│  ─────────────────────────────────          │
+│  [ Approve all 5 ] [ Skip all ]             │
+│                                             │
+│  ⚙  Want to skip approvals?                 │
+│  Turn on Autopilot → (you've approved 96%   │
+│  of past items — you're ready)              │
+└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│  ←  Preview                       Approve   │
+│                                             │
+│  Reply to Susan T. (2 stars)                │
+│                                             │
+│  ─────  HER REVIEW  ─────                   │
+│  Susan T. ⭐ ⭐  14h ago                       │
+│  "Tech showed up late, no call ahead.       │
+│  Work was fine but really frustrating."     │
+│                                             │
+│  ─────  OUR DRAFT REPLY  ─────              │
+│  ┌────────────────────────────────────────┐ │
+│  │ Susan, I'm Mike at Lone Star and I     │ │
+│  │ want to apologize for the late arrival │ │
+│  │ — that's on us. Please call me direct  │ │
+│  │ at 972-xxx-xxxx so I can make this     │ │
+│  │ right. Thanks for letting us know.     │ │
+│  └────────────────────────────────────────┘ │
+│                                             │
+│  ▸  Why this approach: Acknowledging late    │
+│    arrival without excuses, owner's name,   │
+│    direct phone number, ownership tone.     │
+│                                             │
+│  [ Edit text ]   [ Regenerate ]             │
+
+Key UX decisions
+Cards, not rows. Each item is a self-contained card with all context inline. No need to drill
+into a detail screen for a quick approve.
+Color-coded urgency. 🔴  = needs attention (negative review, urgent), 🟢  = standard.
+Why this? rendered inline. Owner doesn't trust changes he doesn't understand. Two-line
+"why" is required on every card.
+Preview vs. Approve are diﬀerent actions. Approve commits; Preview shows.
+"Approve all" is the biggest button at the bottom. PLG-critical for autopilot graduation.
+Autopilot graduation prompt at the bottom. Earned, not pushed: "you've approved 96% of
+past items."
+PLG levers
+Lever Mechanism
+Mobile-ﬁrst design Approval from the truck cab
+Single-tap approve Reduced friction → higher engagement → habit formation
+Approve-all button Direct path to autopilot
+Autopilot graduation prompt Behavioral trigger when approval rate ≥ 90%
+Preview before commit Trust mechanism; reduces revert rate
+Failure modes & recovery
+Owner approves something he didn't mean to. One-tap revert from conﬁrmation screen,
+also from Action Log (Settings → History → Revert).
+Owner edits AI draft and ships a typo. Revert + re-edit; we don't punish him for it.
+Owner skips items repeatedly. Internal alert: voice proﬁle may be oﬀ. CSM intervention.
+│                                             │
+│  [ APPROVE & POST ]                         │
+│                                             │
+│  ⚠  Once approved, this posts publicly to   │
+│  Google. You can edit it after if needed.   │
+└─────────────────────────────────────────────┘
+
+Negative-review reply needs human review (legal-sensitive language). Auto-routes to
+internal Content Reviewer queue (admin ﬂow #12) before showing to owner.
+Events to instrument
+Success metrics
+Approval rate: target >85% (skipped + reverted < 15%)
+Time-per-approval: target <30 sec median
+Edit rate: target <10% (>10% means voice proﬁle is oﬀ)
+Revert rate: target <5% (>5% means quality is failing)
+Flow 6 — Autopilot Graduation
+State transition: Habituated → Autopilot Goal: Get the owner out of the queue. Frees mental
+load. Drives retention. Entry trigger: Behavioral signal (approval rate ≥ 90%, 30+ days, no reverts
+in 14 days).
+The graduation moment
+queue_viewed                  { items_count, high_priority_count }
+item_previewed                { item_id, item_type }
+item_approved                 { item_id, time_in_preview_seconds }
+item_edited                   { item_id, edit_chars }
+item_regenerated              { item_id }
+item_skipped                  { item_id, reason? }
+item_reverted                 { item_id, time_since_publish_seconds }
+approve_all_tapped            { items_count }
+autopilot_prompt_shown        { approval_rate, items_history }
+autopilot_enabled             { from_prompt: bool }
+┌─────────────────────────────────────────────┐
+│  You're ready for Autopilot.                │
+│                                             │
+│  In your first 35 days you've approved      │
+│  47 of 51 fixes. Edits: 3. Reverts: 0.      │
+│                                             │
+│  You can let Beacon ship straight to live.  │
+│                                             │
+│  WHAT CHANGES                               │
+│   ✓ No more approval queue (Beacon ships    │
+
+Key UX decisions
+Earned, not pushed. Don't show this prompt until the behavioral threshold is met.
+Showing it too early kills trust.
+Negative reviews always require approval. This is non-negotiable. Even on autopilot,
+certain content types route to manual review.
+Reversibility in plain language. "Pause autopilot anytime" + "one-tap revert" — fear-
+killers.
+PLG levers
+Lever Mechanism
+Behavioral trigger Only shown when ready → high acceptance rate
+Reversibility framing "Pause anytime" reduces commitment fear
+Statistical proof "You approved 47 of 51" → owner sees his own readiness
+Cognitive oﬄoad After enabling: owner stops thinking about Beacon → strongest retention signal
+Events to instrument
+│     directly)                               │
+│   ✓ Weekly digest still arrives Sundays     │
+│   ✓ One-tap revert on anything              │
+│   ✓ Pause autopilot anytime                 │
+│                                             │
+│  WHAT STAYS THE SAME                        │
+│   ✓ All shipped content stays on your site  │
+│   ✓ Negative reviews still need approval    │
+│   ✓ Major site changes still need approval  │
+│                                             │
+│  [ Turn on Autopilot ]                      │
+│  [ Not yet, keep approving ]                │
+└─────────────────────────────────────────────┘
+autopilot_eligible            (behavioral state event)
+autopilot_prompt_shown        { trigger_context }
+autopilot_enabled             { time_since_signup_days }
+
+Success metrics
+% of paid customers on autopilot at month 3: target 40%
+% of paid customers on autopilot at month 6: target 70%
+Autopilot pause rate: target <10% (rare, indicates quality problem)
+Flow 7 — Score Plateau / Recovery
+State transition: Habituated → At-Risk → Habituated Goal: Detect when the product has stopped
+delivering Score lift and intervene before churn. Entry trigger: Score ﬂat or declining for 3
+consecutive weeks.
+What the owner sees (gentle, honest)
+What runs in the background
+Internal alert ﬁres; assigned to CSM (Pro+) or to ops bench (Lite).
+Deep diagnostic: re-fetch all competitor cited content, look for new patterns we missed, re-
+evaluate prompt set.
+Diﬀerent ﬁx types queued (e.g., shift from FAQ generation to authority-building external
+citations).
+Owner gets next weekly digest with "we tried X, here's what's working / not."
+Key UX decisions
+Honest framing, not corporate spin. Trades audience smells corporate-speak instantly.
+"Heads up — we're working on it" beats "We've identiﬁed opportunities."
+Reply-to-talk option. SMS reply with "CALL" triggers a CSM callback within 4h. No
+support form, no portal.
+autopilot_paused              { reason }
+autopilot_re_enabled          { time_paused_days }
+[SMS]
+Heads up — your AI Visibility Score has been
+flat at 42 for 3 weeks. We're going to run a
+deeper diagnostic and try a different angle.
+Update next week. Reply CALL if you want to
+talk to a human.
+
+Next digest closes the loop. Don't leave the conversation hanging.
+Failure modes & recovery
+3 more weeks of ﬂat Score after intervention. Escalate: free strategy session oﬀered, or
+proactive 30%-oﬀ-for-3-months retention oﬀer.
+Owner replies CALL. CSM hits 4-hour SLA. CSM has access to full diagnostic data before
+the call.
+Score plateau is genuine ceiling (already at top). Reframe: shift to maintenance mode +
+competitor watch. Score isn't going up because there's nowhere to go.
+Flow 8 — Team Member Invite
+State: Habituated / Autopilot Goal: Mike brings his Oﬃce Manager into the product.
+Step-by-step
+Manager's experience
+Receives email with magic-link sign-in.
+Lands on shared workspace home.
+Sees same Action Queue Mike sees.
+Cannot access Settings → Billing or Settings → Integrations (changes require Owner).
+Can approve, edit, regenerate items.
+Settings → Team → [+ Invite member]
+┌─────────────────────────────────────────────┐
+│  Invite a teammate                          │
+│                                             │
+│  Email: sarah@lonestar.com                  │
+│                                             │
+│  Role:                                      │
+│   ○  Owner (full access incl. billing)       │
+│   ● Manager (queue, reports — no billing)   │
+│   ○  Viewer (read-only)                      │
+│                                             │
+│  [ Send invite ]                            │
+└─────────────────────────────────────────────┘
+
+Can conﬁgure her own digest preferences (digest can go to multiple addresses).
+Key UX decisions
+Magic-link signup for invitees. No password creation friction.
+Role-based defaults. Manager doesn't see billing. Reduces accidental confusion.
+Shared workspace, not separate accounts. Owner and Manager work on the same data.
+PLG levers
+Multi-seat = stickier account. When Sarah uses the product daily, Mike doesn't churn it.
+Sarah may become the in-product power user. Owners often disengage; champions retain
+accounts.
+Flow 9 — Tier Upgrade (Lite → Pro)
+State transition: Paid (Lite) → Paid (Pro) = Expanded Goal: Upgrade triggered by hitting a value
+ceiling or unlocking a gated feature.
+In-context upgrade triggers
+Trigger Mechanism
+Lite user hits 25-prompt cap Banner: "You're tracking 25 of 50 possible prompts. Pro unlocks all of
+them."
+Lite user views autopilot toggle"Autopilot is a Pro feature. Try it free for 7 days."
+Lite user wants a Service Page
+generated
+"Service Page generation is on Pro. See pricing →"
+Score plateau on Lite "Lite is monitoring-only. Pro ships ﬁxes automatically — that's where
+most Score lift comes from."
+Upgrade modal
+┌─────────────────────────────────────────────┐
+│  Upgrade to Pro                             │
+│                                             │
+│                  LITE          PRO          │
+│  Price          $199/mo       $499/mo       │
+
+Key UX decisions
+Comparison is concrete, not feature-fetishy. "Pro customers in similar shops average 12 →
+47 in 60 days" beats a feature checklist.
+7-day Pro trial when upgrading from Lite. Reduces decision friction.
+Downgrade always available. No "Pro only" lock-in.
+PLG levers
+In-context upgrades. Triggered exactly when the value gap is felt.
+Cohort-based proof. "Customers like you" comparison is more persuasive than abstract
+feature lists.
+Trial-to-trial. Upgrade is itself a trial — reduces conversion fear.
+Events to instrument
+│                                             │
+│  Prompts tracked   25            50          │
+│  Auto-publish      ✗             ✓           │
+│  Schema injection  ✗             ✓           │
+│  Service pages     ✗             ✓           │
+│  Brand voice       basic         deep        │
+│  FSM integration   ✗             ✓           │
+│  Slack digest      ✗             ✓           │
+│                                             │
+│  ─────────────────────────────────          │
+│                                             │
+│  In your first 60 days on Lite, your        │
+│  Score went 12 → 24. Pro customers in       │
+│  similar shops average 12 → 47 in 60 days.  │
+│                                             │
+│  [ Upgrade — try Pro free for 7 days ]      │
+│  [ Stay on Lite ]                           │
+└─────────────────────────────────────────────┘
+upgrade_prompt_shown          { trigger, current_tier }
+upgrade_modal_viewed          { trigger }
+upgrade_clicked               { from_tier, to_tier }
+upgrade_completed             { time_since_prompt_minutes }
+upgrade_declined              { reason? }
+upgrade_trial_started         { from_tier, to_tier }
+
+Flow 10 — Referral / Peer Loop
+State: Habituated / Autopilot / Expanded Goal: Make peer recommendation in IEC chapters and
+supply houses easy and rewarded.
+Referral mechanism
+Score certiﬁcate (V1.5)
+After 90 days on Beacon, owners get a shareable image:
+Settings → Refer a friend
+┌─────────────────────────────────────────────┐
+│  Refer a peer, get $100                     │
+│                                             │
+│  Your unique link:                          │
+│  beacon.app/r/lonestar                      │
+│  [ Copy ]  [ Share via SMS ]  [ Email ]     │
+│                                             │
+│  Or send their score directly:              │
+│  ┌────────────────────────────────────────┐ │
+│  │ Friend's business: ___________________  │ │
+│  │ [ Run their audit & email it ]         │ │
+│  └────────────────────────────────────────┘ │
+│                                             │
+│  ─────  YOUR REFERRALS  ─────               │
+│  • Bright Spark Electrical — joined Sep 14  │
+│    You earned $100 credit                   │
+│  • Plano Electric Pros — running audit      │
+└─────────────────────────────────────────────┘
+
+Key UX decisions
+Two paths: link sharing OR direct audit-email. The audit-email path is more powerful —
+Mike can run a peer's audit and forward the result, planting the seed personally.
+Concrete dollar incentive. $100 credit (per side, both Mike and the referred peer get $100).
+Score certiﬁcate is shareable. Bragging rights → viral coeﬃcient.
+PLG levers
+Lever Mechanism
+Two-sided incentive Both parties motivated
+Audit-as-gift Mike sends a peer their personalized audit — relationship-grade lead
+gen
+Score certiﬁcate LinkedIn/GBP shareable artifact → top-of-funnel for Beacon
+IEC chapter / supply house
+context
+Trades community is tight-knit, peer recs convert
+┌─────────────────────────────────────────────┐
+│                                             │
+│   AI VISIBILITY SCORE                       │
+│                                             │
+│       ┌─────┐                               │
+│       │ 73  │   ▲ +61 in 90 days            │
+│       └─────┘                               │
+│                                             │
+│   LONE STAR ELECTRIC                        │
+│   Plano TX • 87 reviews • Master licensed   │
+│                                             │
+│   #1 ranked AI-cited electrician in Plano   │
+│                                             │
+│   ─────────────────────────────             │
+│   Powered by Beacon                         │
+│                                             │
+└─────────────────────────────────────────────┘
+[Download]  [Share LinkedIn]  [Share GBP]
+
+Events to instrument
+Success metrics
+Referral coeﬃcient: target 0.15 (each customer brings 0.15 paid customers)
+Score certiﬁcate share rate: target 20% of eligible customers (90+ days, Score ≥50)
+Flow 11 — Cancellation & Win-Back
+State transition: Paid → Churned (or back to Paid) Goal: Honest cancellation ﬂow that preserves
+dignity, captures real reasons, and surfaces last-chance oﬀers without dark-pattern friction.
+Cancellation ﬂow
+referral_link_copied
+referral_link_shared          { channel }
+referral_audit_sent           { peer_business }
+referral_signup_attributed    { referrer_id }
+referral_conversion           { referrer_id, peer_id, credit_amount }
+score_certificate_downloaded
+score_certificate_shared      { channel }
+Settings → Billing → Cancel subscription
+┌─────────────────────────────────────────────┐
+│  Sorry to see you go.                       │
+│                                             │
+│  Quick — what's the reason?                 │
+│  (This actually shapes our offer below.)    │
+│                                             │
+│   ○  Too expensive                           │
+│   ○  Not seeing enough value                 │
+│   ○  Selling/closing the business            │
+│   ○  Switching to a different tool           │
+│   ○  Score is great, don't need ongoing      │
+│   ○  Other                                   │
+│                                             │
+│  [ Continue ]                               │
+└─────────────────────────────────────────────┘
+
+Per-reason oﬀer screen
+Reason Oﬀer
+Too expensive "We get it. Want 50% oﬀ for 3 months while we work this out together?"
+Not seeing enough
+value
+"Score may be plateauing. Free 30-min strategy session with our lead?"
+Selling/closing "Best of luck. We'll keep your shipped content live for 90 days at no cost."
+Switching "Curious — which tool? Let us beat or match."
+Score is great "You're right — let's drop you to monitoring-only at $79/mo. No more changes;
+we just watch."
+Other Free-text + 20% oﬀ oﬀer
+Final conﬁrmation
+Win-back sequence (post-cancel)
+Day 7: Final monthly report shows what was working
+Day 14: New competitor citation alert ("Bright Spark just got cited 3 times this week")
+┌─────────────────────────────────────────────┐
+│  Cancellation confirmed.                    │
+│                                             │
+│  Here's what happens:                       │
+│   ✓ Everything we built stays live on your  │
+│     site forever.                           │
+│   ✓ Your last digest goes out Sunday.       │
+│   ✓ Schema script keeps working until you   │
+│     remove it.                              │
+│   ✗ We stop running radar and shipping new  │
+│     fixes after Dec 14.                     │
+│                                             │
+│  Change your mind in the next 30 days and   │
+│  we'll restore everything as if you never   │
+│  left.                                      │
+│                                             │
+│  [ Done ]    [ Actually, never mind ]       │
+└─────────────────────────────────────────────┘
+
+Day 30: "Score has dropped from 73 to 61 since you canceled. Want to come back?"
+Day 60: Last touch — case study from a similar peer
+Day 90: Stop the sequence
+Key UX decisions
+Reason captured ﬁrst, oﬀer shaped to it. Dark patterns this isn't — but smart
+segmentation is fair.
+Honest framing about what stays/goes. "Everything stays live forever" is a real moat and a
+real reassurance.
+30-day "as if you never left" window. Reduces fear of leaving wrong.
+Win-back uses real competitive data, not nagging. "Your competitor pulled ahead" beats
+"we miss you."
+PLG levers
+Lever Mechanism
+Reason-shaped oﬀers Higher save rate without manipulation
+Compounded asset
+preservation
+Reduces psychological cost of leaving (paradoxically reduces actual
+leaving)
+Real-data win-back "Score dropped" is provable, not emotional
+Events to instrument
+Success metrics
+Cancel-to-save rate: target 25% (1 in 4 reach the oﬀer screen and stay)
+Win-back rate at day 90: target 8% of churned customers
+cancellation_started
+cancellation_reason_selected  { reason }
+retention_offer_shown         { offer_type }
+retention_offer_accepted      { offer_type }
+cancellation_completed        { reason, mrr_lost }
+winback_email_sent            { day, content_type }
+winback_clicked               { email_id }
+winback_succeeded             { time_since_cancel_days }
+
+Reason-coverage rate: target >95% (always capture why)
+PART II — INTERNAL ADMIN FLOWS
+These ﬂows describe what the Beacon team does inside the platform.
+Flow 12 — Content Review Queue (Quality Gate)
+Persona: Content Reviewer Goal: Every AI-generated piece for new customers (ﬁrst 30 days) and
+any low-conﬁdence piece thereafter passes through human review before publishing.
+Content reviewer dashboard
+┌─────────────────────────────────────────────────────────────────┐
+│  Content Review Queue                              247 pending   │
+│                                                                 │
+│  Filter: ▾  All customers  ▾  All types  ▾  Confidence < 0.7      │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 🔴  Lone Star Electric (Day 3)                              │  │
+│  │ TYPE: Service page (Frisco)    CONFIDENCE: 0.62            │  │
+│  │ FLAGS: low brand-voice match; 1 phrase resembles training │  │
+│  │                                                            │  │
+│  │ [ View ]  [ Approve ]  [ Edit & approve ]  [ Reject ]     │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 🟡  Bright Spark (Day 17)                                   │  │
+│  │ TYPE: Negative review reply  CONFIDENCE: 0.78              │  │
+│  │ FLAGS: legal-sensitive language detected ("liable")        │  │
+│  │ [ View ]  [ Approve ]  [ Edit & approve ]  [ Reject ]     │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 🟢  Reliable Electric (Day 22)                              │  │
+│  │ TYPE: FAQ pair                CONFIDENCE: 0.91             │  │
+│  │ FLAGS: none                                                │  │
+│  │ [ View ]  [ Approve ]  [ Edit & approve ]  [ Reject ]     │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                                                 │
+
+What "Reject" does
+Item never reaches the customer's queue.
+Generation is retried with adjusted parameters (diﬀerent few-shot examples, voice proﬁle
+re-tuning).
+After 2 rejections on same item type for same customer, internal alert: voice proﬁle may
+need retraining.
+Pattern detection
+If a customer has >5 rejected pieces in 30 days, the system ﬂags their brand voice proﬁle for
+re-evaluation.
+If a content type (e.g., FAQ pairs) has >15% rejection rate across all customers, the system
+ﬂags the prompt template for re-engineering.
+If a single reviewer rejects >3x the rate of peers, internal QA reviews their decisions.
+Key UX decisions
+Conﬁdence score visible. Reviewer triages high-conﬁdence items fast, focuses brain on
+edge cases.
+Flags called out explicitly. "Legal-sensitive language detected" pre-loads the reviewer's
+attention.
+Bulk approve for high-conﬁdence. Reviewer time is ﬁnite; system should auto-approve
+trustworthy items.
+Edit-and-approve preserves the customer experience. The customer never sees that their
+item was reviewed by a human.
+Events to instrument
+│  Bulk actions:  [ Approve all confidence ≥ 0.85 ]              │
+└─────────────────────────────────────────────────────────────────┘
+review_queued                 { customer_id, content_type, confidence, flags }
+review_approved               { reviewer_id, time_in_review_seconds }
+review_edited_approved        { reviewer_id, edit_chars }
+review_rejected               { reviewer_id, reason }
+review_pattern_alert          { pattern_type, customer_id }
+voice_profile_retrain_flagged { customer_id, trigger }
+
+Success metrics
+Reviewer throughput: target >40 items/hour at conﬁdence ≥ 0.85
+Rejection rate: target <8% overall (>8% indicates generation quality problem)
+First-30-day customer NPS: maintain >50 through human-review period
+Flow 13 — Customer Health Dashboard (Operations / CSM)
+Persona: Operations Lead, CSM Goal: Surface at-risk customers before they churn; surface
+expansion-ready customers before competitors do.
+Health dashboard
+┌─────────────────────────────────────────────────────────────────┐
+│  Customer Health                          47 customers tracked   │
+│                                                                 │
+│  Filter: ▾  All tiers  ▾  All states  Sort: ▾  Health (asc)       │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ 🔴  Plano Electric Pros (Pro, day 67)        Health: 23  │   │
+│  │ • Score plateau 4 weeks                                 │   │
+│  │ • Digest not opened 3 weeks                             │   │
+│  │ • Approval queue untouched 14 days                      │   │
+│  │ Suggested action: outreach call this week               │   │
+│  │ [ View account ] [ Trigger save flow ] [ Snooze ]      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ 🟡  Reliable Electric (Lite, day 52)         Health: 64  │   │
+│  │ • Score lift solid (12 → 31)                            │   │
+│  │ • Hit 25-prompt cap                                     │   │
+│  │ • 5 service-page interest events                        │   │
+│  │ Suggested action: upgrade-to-Pro nudge                  │   │
+│  │ [ View ] [ Send upgrade prompt ] [ Schedule call ]     │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ 🟢  Lone Star Electric (Pro, day 41)         Health: 89  │   │
+│  │ • Score 12 → 47 (+35)                                   │   │
+│  │ • Autopilot enabled day 35                              │   │
+│  │ • Sent 2 referrals                                      │   │
+
+Health Score components
+Triggered alerts
+Trigger Alert routing
+Health drops below 40 CSM Slack channel + email
+Health drops below 25 Ops lead immediate alert
+Score plateau 4+ weeks CSM action queue
+Digest unread 3+ weeks Auto-pause email frequency, send "are you still there?"
+Cap-hit on Lite Auto-trigger upgrade prompt + sales motion
+90+ days, score >50, autopilot enabled Case study request queue
+Key UX decisions
+Suggested action per row. Internal team should not have to interpret data; dashboard
+prescribes the next move.
+Color-coded urgency. Same visual language as customer-facing app — single-color status.
+Bulk actions. Triage 50 customers at a time without 50 clicks.
+Snooze, not dismiss. Keep the customer in view; we don't lose them.
+│  │ Suggested action: case study request                    │   │
+│  │ [ View ] [ Request case study ]                         │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+Health Score (0–100) =
+0.30 × Score Trajectory (week-over-week Δ in AI Visibility Score)
++ 0.20 × Engagement (digest opens, queue interactions, login frequency)
++ 0.20 × Approval Quality (approval rate, edit rate, revert rate)
++ 0.15 × Expansion Signals (cap hits, gated feature views)
++ 0.10 × Support Load (negative tickets, escalations — inverse)
++ 0.05 × Tenure (longer = healthier, all else equal)
+
+Events to instrument
+Success metrics
+Time-to-intervention on red customers: target <48h
+Save rate on red intervention: target >50%
+Expansion conversion on yellow-with-upgrade-signal: target >30%
+Flow 14 — Customer Account View (CSM Deep-Dive)
+Persona: CSM, Support Goal: Single page that gives full context on one customer for any
+conversation.
+Account view layout
+health_score_recomputed       { customer_id, score, components }
+health_alert_fired            { customer_id, severity }
+health_action_taken           { customer_id, action, csm_id }
+health_action_outcome         { customer_id, outcome: 'saved' | 'churned' |
+'upgraded' }
+┌─────────────────────────────────────────────────────────────────┐
+│  Lone Star Electric                              [Pro] Day 67   │
+│  Mike Reynolds, Owner • mike@lonestar.com • 972-555-0142        │
+│                                                                 │
+│  ── HEALTH ──────────────────────────────────────────────────  │
+│  Health: 89 (green, ↗)                                          │
+│  AI Visibility Score: 47 (started 12, +35 in 67 days)          │
+│  Tier: Pro $499/mo • 41 days to renewal                         │
+│  Autopilot: ON since day 35                                     │
+│                                                                 │
+│  ── TIMELINE ────────────────────────────────────────────────  │
+│  Day 67  Score 47 (+2 wk)                                       │
+│  Day 65  Sent referral to Bright Spark Electrical               │
+│  Day 35  Autopilot enabled                                      │
+│  Day 18  Tier upgrade Lite → Pro                                │
+│  Day 12  Connected ServiceTitan                                 │
+│  Day 1   First fix shipped                                      │
+│  Day 0   Signed up via free audit                               │
+│                                                                 │
+│  ── ACTIVITY (LAST 30 DAYS) ─────────────────────────────────  │
+
+Key UX decisions
+Single page. No tabs, no drill-down. CSM grabs context in 30 seconds before a call.
+Timeline view. Shows trajectory, not just snapshot.
+Notes inline. CSMs can add free-text notes; persists with account.
+Action buttons at the bottom. Most-common actions one click away.
+Flow 15 — Internal Onboarding Observation (First 30 Days)
+Persona: CSM, Operations Goal: Watch every new customer's ﬁrst 30 days like a hawk; intervene
+at any failure point.
+Onboarding watch list
+│  Fixes shipped: 47                                              │
+│  Approval rate: 96%   Edit rate: 4%   Revert rate: 0%           │
+│  Digest open rate: 100% (4/4)                                   │
+│  Login frequency: 3x/wk                                         │
+│                                                                 │
+│  ── INTEGRATIONS ────────────────────────────────────────────  │
+│   ✓ Google Business Profile (lone-star-electric)                │
+│   ✓ WordPress (lonestarelectric.com)                            │
+│   ✓ ServiceTitan (review-pump live)                             │
+│   ✗ Slack (not connected)                                       │
+│                                                                 │
+│  ── NOTES & FLAGS ───────────────────────────────────────────  │
+│  • Asked about multi-location during signup (1 location now,    │
+│    considering adding McKinney shop) — expansion target Q2      │
+│  • Mentioned IEC chapter membership; potential case study       │
+│                                                                 │
+│  [ Schedule call ] [ Send custom message ] [ Trigger upgrade ]  │
+│  [ Export account data ]                                        │
+└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│  New Customers — First 30 Days        12 active                 │
+│                                                                 │
+│  Day 1 (Today)                                                  │
+│   ✓ Lone Star Electric — first fix shipped 4h after signup     │
+│   ⚠ Plano Lighting Co — signed up 6h ago, no first fix yet     │
+│     [ Send SMS reminder ] [ Owner is offline; queue for AM ]   │
+
+Daily ritual
+9 AM standup: review overnight signups, day-7 / day-14 / day-30 milestones
+Anything in 🔴  status gets intervention same-day
+Anything in ⚠  status gets queued for AM call
+Key UX decisions
+Day-bucketed view. First 30 days is a structured journey; surface where each customer is.
+Proactive, not reactive. CSM hits the SMS reminder before the customer churns, not after.
+Auto-recovery sequences for abandoners. Failed onboarding doesn't mean lost customer
+— it means triggered nurture.
+Flow 16 — Support Inbox
+Persona: Support, Tier-1 Goal: Resolve incoming tickets fast with shared macros and full account
+context.
+Support inbox
+│                                                                 │
+│  Day 7                                                          │
+│   ✓ Bright Spark — Score 8 → 19 (+11), digest opened           │
+│   ⚠ Frisco Electric — Score flat, digest not opened            │
+│     [ Schedule check-in call ]                                  │
+│                                                                 │
+│  Day 14                                                         │
+│   ✓ Reliable Electric — 7 fixes shipped, approval rate 100%    │
+│   🔴  Allen Electric Co — abandoned after onboarding             │
+│     [ Send recovery sequence ] [ Trial ends in 3 days ]        │
+│                                                                 │
+│  Day 30                                                         │
+│   ✓ Wylie Watt — Score 14 → 38, ready for autopilot prompt     │
+│   ⚠ McKinney Electric — Score lift modest; voice profile flag  │
+│     [ Trigger voice retrain ] [ CSM call ]                     │
+└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│  Support Inbox                          12 open • 3 priority    │
+│                                                                 │
+
+Macro library
+"Schema script install help" — links to walkthrough video
+"Add service area" — one-click ﬂow that updates customer's service-area conﬁg
+"Score plateau explainer" — pre-written customer-facing explanation
+"Refund/cancel" — billing ﬂow trigger
+"Thank-you + case-study ask" — for happy customers
+Routing rules
+Billing/account/onboarding → Tier-1
+Schema/CMS/integration → Tier-2 (technical)
+Content quality/voice issues → Content Reviewer team
+Anything from a churn-risk account → CSM
+Key UX decisions
+Macro suggestion based on ticket content. AI categorizes and suggests responses.
+Account context inline. Customer's tier, score, day-in-product visible without clicking.
+Routing is automatic. Tickets land where they should; manual reassignment is rare.
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 🔴  Lone Star — "Schema script broke our site!"            │  │
+│  │ Reported 18 min ago | Owner: Mike R | Tier: Pro            │  │
+│  │ [ Open ] [ Assign to L2 (technical) ]                     │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 🟡  Frisco Electric — "How do I add another service area?" │  │
+│  │ Reported 2h ago | Owner: Sarah T | Tier: Lite              │  │
+│  │ Macro suggested: "Add service area" (94% match)            │  │
+│  │ [ Use macro ] [ Open ]                                    │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ 🟢  Bright Spark — "Love the score lift"                   │  │
+│  │ Macro suggested: "Thank-you + case-study ask"              │  │
+│  └───────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+
+Flow 17 — Agency White-Label Admin (V2)
+Persona: Marketing agency reselling Beacon Goal: Manage 10–100+ contractor sub-accounts
+under a single agency master.
+Agency dashboard
+Key UX decisions
+Aggregate view ﬁrst, drill-down second. Agency owners want signal across the portfolio.
+Branding controls in the admin. White-label is an actual feature, not a toggle.
+Reseller pricing visible. Agency knows its margin at all times.
+PART III — CROSS-FLOW CONSIDERATIONS
+┌─────────────────────────────────────────────────────────────────┐
+│  ScorpionDigital — Agency Admin             34 sub-accounts     │
+│                                                                 │
+│  Aggregate this week:                                           │
+│   • Avg Score lift: +6.2                                        │
+│   • Total fixes shipped: 312                                    │
+│   • Customers in red health: 2                                  │
+│   • Customers ready for QBR: 7                                  │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ Sub-account                Score  Δ wk  Health   Action   │  │
+│  │ Lone Star Electric           47    +2    89      —        │  │
+│  │ Plano Electric Pros          31     0    23   ⚠ INTERVENE │  │
+│  │ Bright Spark Electrical      52    +4    77      —        │  │
+│  │ Reliable Electric            41    +3    81      —        │  │
+│  │ ...                                                         │  │
+│  │ [ Bulk: run radar ] [ Bulk: digest test ] [ Add account ] │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  Branding: ScorpionDigital logo on customer reports            │
+│  Custom domain: insights.scorpiondigital.com  ✓ Verified        │
+│  Reseller pricing: $399/sub-account flat (Pro features)         │
+└─────────────────────────────────────────────────────────────────┘
+
+Used everywhere a publish action is committed.
+Shared Pattern: Empty States
+Empty states are designed as engagement opportunities, not error messages.
+Shared Pattern: Error & Fallback
+All errors are user-grade, never developer-grade.
+┌─────────────────────────────────────┐
+│  Approve and publish?               │
+│                                     │
+│  This will publish 6 FAQ pairs to:  │
+│   • lonestarelectric.com/panel-up   │
+│   • Google Business Profile Q&A     │
+│                                     │
+│  Goes live in ~5 minutes.           │
+│  You can revert in one tap anytime. │
+│                                     │
+│  [ Cancel ]  [ Approve & Publish ]  │
+└─────────────────────────────────────┘
+[Action Queue empty]
+┌─────────────────────────────────────┐
+│                                     │
+│     ▢  All caught up                 │
+│                                     │
+│  We're scanning AI engines now.     │
+│  Next batch of fixes lands tomorrow │
+│  morning by 7 AM.                   │
+│                                     │
+│  [ See last week's wins → ]         │
+│                                     │
+└─────────────────────────────────────┘
+
+Cross-Flow PLG Architecture
+How the customer-facing ﬂows connect to drive PLG outcomes:
+[GBP API timeout]
+┌─────────────────────────────────────┐
+│  Hmm — Google's not responding.     │
+│  We'll retry in a few minutes.      │
+│                                     │
+│  Your fix is queued and will publish│
+│  as soon as Google's back.          │
+│                                     │
+│  [ Got it ]                         │
+└─────────────────────────────────────┘
+
+┌──────────────────┐
+│   FREE AUDIT     │ ◀ ─── Top of funnel
+│   (Flow 1)       │
+└───────── ┬ ────────┘
+│ 25%
+▼
+┌──────────────────┐
+│   ONBOARDING     │
+│   (Flow 2)       │
+└───────── ┬ ────────┘
+│ 70% activate
+▼
+┌──────────────────┐
+│  DAILY HABIT     │ ◀ ─── Background loop (Flow 3)
+│  (passive)       │
+└───────── ┬ ────────┘
+│
+▼
+┌──────────────────┐
+│  WEEKLY DIGEST   │ ◀ ─── Habit hook (Flow 4)
+└───────── ┬ ────────┘
+│ tap-through
+▼
+┌──────────────────┐
+│  ACTION QUEUE    │ ◀ ─── Approval moment (Flow 5)
+└───────── ┬ ────────┘
+│ 30 days, 90% approval
+▼
+┌──────────────────┐
+│  AUTOPILOT       │ ◀ ─── Lock-in (Flow 6)
+└───────── ┬ ────────┘
+│
+┌─────────────── ┼ ───────────────┐
+▼               ▼               ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│  TEAM INVITE │ │ TIER UPGRADE │ │  REFERRAL    │
+│  (Flow 8)    │ │  (Flow 9)    │ │  (Flow 10)   │
+└──────────────┘ └──────────────┘ └────── ┬ ───────┘
+│
+▼
+loops back to FREE AUDIT
+for the referred peer
+
+Instrumentation Plan Summary
+Every event captured in this document maps to one of four buckets:
+Bucket Used for
+Acquisition Audit funnel, signup, source attribution
+Activation Onboarding completion, ﬁrst-ﬁx-shipped, time-to-aha
+Engagement Digest opens, queue interactions, login frequency
+Conversion / Expansion Upgrade clicks, referrals sent, autopilot enabled
+Retention / Churn Cancellation reasons, win-back funnel, save rates
+A single event schema (event_name, customer_id, tier, state, properties{}) is used
+everywhere. Stored in a warehouse (BigQuery or Snowﬂake) and surfaced via a single dashboard
+for the team.
+Build Order for V0.1 (Aligned with PRD MVP Weeks 1–8)
+Week Customer-facing ﬂows shipped Internal ﬂows shipped
+1 — (skeleton + auth) —
+2 Audit (Flow 1, basic) —
+3 Audit polished + email capture —
+4 Onboarding wizard (Flow 2) Content Review Queue (Flow 12) — minimal
+5 Action Queue + Approval (Flow 5) Onboarding Watch (Flow 15)
+6 First-Fix Shipping + GBP integration Customer Account View (Flow 14)
+7 Weekly Digest (Flow 4) Health Dashboard (Flow 13) — basic
+8 Polish + bug bash Support Inbox (Flow 16) — minimal
+Deferred to V1 (weeks 9–20):
+
+Autopilot graduation (Flow 6)
+Score plateau intervention (Flow 7)
+Team invite (Flow 8)
+Tier upgrade modal (Flow 9)
+Referral system (Flow 10)
+Cancellation polish (Flow 11)
+Deferred to V2 (months 6+):
+Agency white-label (Flow 17)
+Score certiﬁcate
+Multi-location consolidated view
+— End of v0.1. Next revision after ﬁrst 10 design partners complete onboarding (week 6 of MVP).
