@@ -1335,3 +1335,456 @@
     margin-bottom: 4px !important;
   }
 }
+
+/* ══ HERO VIDEO BACKGROUND ══ */
+.ref-hero {
+  position: relative !important;
+  overflow: hidden !important;
+  padding-top: clamp(100px, 9vw, 130px) !important;
+}
+
+/* Ensure container sits on top of video background */
+.ref-hero > .ref-container {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.ref-hero-video-bg {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.ref-hero-video-bg video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.ref-hero-video-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  /* Ultra-glassy transparent radial gradient for dark theme */
+  background: radial-gradient(circle at 30% 50%, rgba(9, 9, 11, 0.2) 0%, rgba(9, 9, 11, 0.5) 100%) !important;
+  backdrop-filter: blur(1px) !important; /* Extremely soft blur to protect text without blockiness */
+  transition: background 0.3s ease, backdrop-filter 0.3s ease !important;
+}
+
+/* Light mode overlay adjustment to keep readability pristine and extremely transparent */
+[data-theme="light"] .ref-hero-video-overlay {
+  background: radial-gradient(circle at 30% 50%, rgba(251, 252, 250, 0.2) 0%, rgba(251, 252, 250, 0.45) 100%) !important;
+  backdrop-filter: blur(1.5px) !important;
+}
+
+/* ══ STICKY CAPSULE HEADER TRANSPARENCY ON THE TOP ══ */
+.ref-top {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 100 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease-in-out !important;
+}
+
+.ref-nav-shell {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid transparent !important;
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Scrolled state overrides to restore beautiful sticky nav when scrolling down */
+.ref-top.is-scrolled {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.92),
+    rgba(0, 0, 0, 0.68) 68%,
+    transparent
+  ) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+[data-theme="light"] .ref-top.is-scrolled {
+  background: linear-gradient(
+    180deg,
+    rgba(251, 252, 250, 0.96),
+    rgba(251, 252, 250, 0.78) 68%,
+    transparent
+  ) !important;
+}
+
+.ref-top.is-scrolled .ref-nav-shell {
+  background: radial-gradient(
+    145% 115% at 50% 0%,
+    rgba(255, 255, 255, 0.055),
+    transparent 56%
+  ),
+  rgba(10, 11, 12, 0.78) !important;
+  box-shadow:
+    var(--ref-rim),
+    0 18px 46px rgba(0, 0, 0, 0.5),
+    0 6px 18px rgba(49, 131, 122, 0.11) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme="light"] .ref-top.is-scrolled .ref-nav-shell {
+  background: radial-gradient(
+    145% 115% at 50% 0%,
+    rgba(255, 255, 255, 0.86),
+    transparent 56%
+  ),
+  rgba(255, 255, 255, 0.9) !important;
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.08),
+    0 6px 18px rgba(49, 131, 122, 0.05) !important;
+  border-color: rgba(16, 31, 40, 0.24) !important;
+}
+
+/* ================================================================
+   BEACON VISUAL UPDATES & THEME ALIGNMENT OVERRIDES
+   ================================================================ */
+
+/* ── 1. Force Dark Style on Hero Section in Both Themes (with Light Theme fully transparent video background) ── */
+.ref-hero-video-overlay {
+  background: radial-gradient(circle at 30% 50%, rgba(9, 9, 11, 0.2) 0%, rgba(9, 9, 11, 0.5) 100%) !important;
+  backdrop-filter: blur(1px) !important;
+}
+
+[data-theme="light"] .ref-hero-video-overlay {
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+.ref-hero .ref-eyebrow {
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.ref-hero .ref-h1 {
+  color: #ffffff !important;
+}
+.ref-hero .ref-h1 .muted-word {
+  color: rgba(255, 255, 255, 0.56) !important;
+}
+.ref-hero .ref-h1 .angle-word {
+  color: #ffffff !important;
+}
+
+.ref-hero .ref-subhead {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ref-hero .ref-input-wrap {
+  background:
+    radial-gradient(
+      120% 140% at 50% 0%,
+      rgba(255, 255, 255, 0.06),
+      transparent 55%
+    ),
+    rgba(12, 13, 15, 0.82) !important;
+  box-shadow: var(--ref-rim) !important;
+}
+.ref-hero .ref-input-wrap svg {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+.ref-hero .ref-input-wrap input {
+  color: #ffffff !important;
+}
+.ref-hero .ref-input-wrap input::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme="light"] .ref-hero .ref-audit-form.is-search-pop .ref-input-wrap {
+  animation: refSearchPulse 3s ease-in-out infinite !important;
+}
+
+.ref-hero .ref-audit-form:focus-within .ref-input-wrap {
+  border-color: rgba(49, 131, 122, 0.5) !important;
+  background:
+    radial-gradient(
+      120% 140% at 50% 0%,
+      rgba(49, 131, 122, 0.15),
+      transparent 58%
+    ),
+    rgba(12, 13, 15, 0.9) !important;
+  box-shadow:
+    var(--ref-rim),
+    0 0 0 4px rgba(49, 131, 122, 0.15),
+    0 18px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.ref-hero .ref-trust-line {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.ref-hero .ref-hero-note {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+.ref-hero .ref-hero-note b {
+  color: #ffffff !important;
+}
+
+/* ── 2. Force White/Light Navbar Overlay Text When Not Scrolled ── */
+.ref-top:not(.is-scrolled) .ref-brand strong {
+  color: #ffffff !important;
+}
+.ref-top:not(.is-scrolled) .ref-brand > span > span {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.ref-top:not(.is-scrolled) .ref-nav-links a {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+.ref-top:not(.is-scrolled) .ref-nav-links a:hover {
+  color: var(--ref-accent) !important;
+}
+.ref-top:not(.is-scrolled) .ref-auth .ref-nav-action:not(.primary) {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+.ref-top:not(.is-scrolled) .ref-auth .ref-nav-action:not(.primary):hover {
+  color: #ffffff !important;
+}
+
+/* ── 3. Spacing / Margins / Paddings / Stretching ── */
+.ref-hero {
+  padding-bottom: clamp(120px, 14vw, 220px) !important;
+}
+
+#weekly-progress {
+  margin-bottom: clamp(96px, 10vw, 160px) !important;
+}
+
+#pricing {
+  margin-bottom: clamp(96px, 10vw, 160px) !important;
+}
+
+.ref-final-cta {
+  margin-bottom: clamp(96px, 10vw, 160px) !important;
+}
+
+/* ── 4. Force Glassmorphic Dark Pricing Cards in Both Themes ── */
+.ref-pricing-card-item {
+  background: rgba(8, 9, 11, 0.96) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.4), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.ref-pricing-card-item:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(49, 131, 122, 0.4) !important;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.5), 
+    0 0 30px rgba(49, 131, 122, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+.ref-pricing-card-item.featured {
+  border: 1.5px solid rgba(49, 131, 122, 0.6) !important;
+  transform: scale(1.02) !important;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.45), 
+    0 0 32px rgba(49, 131, 122, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.ref-pricing-card-item.featured:hover {
+  transform: scale(1.02) translateY(-3px) !important;
+  box-shadow: 
+    0 35px 70px rgba(0, 0, 0, 0.5), 
+    0 0 40px rgba(49, 131, 122, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Glowing Indicator Capsule for Popular Featured Card */
+.ref-pricing-card-item.featured .ref-pricing-card-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-bottom: 0;
+  background: #10b981 !important;
+  color: #ffffff !important;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.5px solid #000000 !important;
+  box-shadow: 
+    0 0 16px rgba(16, 185, 129, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+/* Typography Overrides */
+.ref-pricing-card-item h3 {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+.ref-pricing-card-item > p {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+.ref-pricing-card-price {
+  color: #ffffff !important;
+}
+.ref-pricing-card-price small {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+.ref-pricing-card-save {
+  color: #10b981 !important;
+}
+.ref-pricing-card-features {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.ref-pricing-card-features li {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.ref-pricing-card-features li::before {
+  color: #10b981 !important;
+}
+
+/* Glass Buttons - exact same design and border in both modes */
+.ref-pricing-card-item .ref-pricing-mini-button {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -1px 0 rgba(0, 0, 0, 0.78), inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 18px 46px rgba(0, 0, 0, 0.34) !important;
+}
+.ref-pricing-card-item .ref-pricing-mini-button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(49, 131, 122, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.78), inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 18px 46px rgba(0, 0, 0, 0.4) !important;
+}
+.ref-pricing-card-item.featured .ref-pricing-mini-button {
+  background: linear-gradient(180deg, #10b981, #059669) !important;
+  border: 1px solid #10b981 !important;
+  color: #ffffff !important;
+  box-shadow: 
+    0 12px 28px rgba(16, 185, 129, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+.ref-pricing-card-item.featured .ref-pricing-mini-button:hover {
+  background: linear-gradient(180deg, #34d399, #059669) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 16px 36px rgba(16, 185, 129, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ── 5. Search Bar Borders - Lock to exact same as dark theme globally ── */
+.ref-input-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+}
+
+/* Force dark theme search pulse animation keyframes in both modes so border color stays white */
+.ref-audit-form.is-search-pop .ref-input-wrap,
+[data-theme="light"] .ref-audit-form.is-search-pop .ref-input-wrap {
+  animation: refSearchPulse 3s ease-in-out infinite !important;
+}
+
+/* ── 6. Make SVGs inside After-the-Audit Cards glow beautifully in both modes ── */
+.ref-card-illustration svg {
+  color: #ffffff !important;
+  filter: drop-shadow(0 0 6px rgba(49, 131, 122, 0.5)) !important;
+  transition: filter 0.3s ease, transform 0.3s ease !important;
+}
+
+.ref-small-card:hover .ref-card-illustration svg {
+  filter: drop-shadow(0 0 12px rgba(49, 131, 122, 0.8)) !important;
+  transform: scale(1.04) !important;
+}
+
+.ref-card-illustration svg rect,
+.ref-card-illustration svg circle,
+.ref-card-illustration svg path,
+.ref-card-illustration svg line,
+.ref-card-illustration svg polygon,
+.ref-card-illustration svg text {
+  transition: all 0.3s ease !important;
+}
+
+/* Accent elements (Teal) */
+.ref-card-illustration svg [fill^="rgba(49,131,122"],
+.ref-card-illustration svg [fill="rgba(49,131,122,0.25)"],
+.ref-card-illustration svg [fill="rgba(49,131,122,0.15)"],
+.ref-card-illustration svg [fill="rgba(49,131,122,0.3)"] {
+  fill: rgba(49, 131, 122, 0.45) !important;
+  opacity: 1 !important;
+}
+
+.ref-card-illustration svg [stroke^="rgba(49,131,122"],
+.ref-card-illustration svg [stroke="rgba(49,131,122,0.6)"],
+.ref-card-illustration svg [stroke="rgba(49,131,122,0.5)"],
+.ref-card-illustration svg [stroke="rgba(49,131,122,0.7)"] {
+  stroke: rgba(79, 209, 197, 0.95) !important;
+  stroke-width: 1.5px !important;
+  opacity: 1 !important;
+}
+
+.ref-card-illustration svg circle[fill^="rgba(49,131,122"] {
+  fill: rgba(49, 131, 122, 0.6) !important;
+}
+
+/* White/Neutral elements */
+.ref-card-illustration svg rect[fill="currentColor"] {
+  fill: #ffffff !important;
+  opacity: 0.85 !important;
+}
+
+.ref-card-illustration svg rect[opacity="0.5"] {
+  opacity: 0.85 !important;
+}
+.ref-card-illustration svg rect[opacity="0.35"] {
+  opacity: 0.65 !important;
+}
+.ref-card-illustration svg rect[opacity="0.25"] {
+  opacity: 0.5 !important;
+}
+
+.ref-card-illustration svg rect[fill^="rgba(255,255,255"],
+.ref-card-illustration svg rect[fill="rgba(255,255,255,0.05)"] {
+  fill: rgba(255, 255, 255, 0.25) !important;
+  opacity: 1 !important;
+}
+
+.ref-card-illustration svg rect[stroke^="rgba(255,255,255"],
+.ref-card-illustration svg rect[stroke="rgba(255, 255, 255, 0.15)"],
+.ref-card-illustration svg rect[stroke="rgba(255, 255, 255, 0.08)"] {
+  stroke: rgba(255, 255, 255, 0.45) !important;
+  opacity: 1 !important;
+}
+
+.ref-card-illustration svg line[stroke^="rgba(255,255,255"],
+.ref-card-illustration svg line[stroke="rgba(255, 255, 255, 0.07)"] {
+  stroke: rgba(255, 255, 255, 0.35) !important;
+  opacity: 1 !important;
+}
+
+.ref-card-illustration svg text {
+  fill: #4fd1c5 !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+
+/* ── 7. Ensure absolute transparency on Hero video overlay in Light Mode ── */
+[data-theme="light"] .ref-hero-video-overlay {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}

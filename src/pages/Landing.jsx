@@ -11,6 +11,15 @@ export default function Landing({ toggleTheme }) {
   const [query, setQuery] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [billingCycle, setBillingCycle] = useState('monthly')
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     const hash = window.location.hash.slice(1)
@@ -26,7 +35,7 @@ export default function Landing({ toggleTheme }) {
   return (
     <div className="landing">
       {/* ── Sticky Nav ── */}
-      <header className="ref-top">
+      <header className={`ref-top ${isScrolled ? 'is-scrolled' : ''}`}>
         <div className="ref-container">
           <div className="ref-nav-shell">
             <a className="ref-brand" href="#">
@@ -59,6 +68,16 @@ export default function Landing({ toggleTheme }) {
       <main>
         {/* ── Hero ── */}
         <section className="ref-hero" id="audit">
+          <div className="ref-hero-video-bg">
+            <video
+              src="/62388e7a0eb65ddf9134c781b253ee9d.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            <div className="ref-hero-video-overlay" />
+          </div>
           <div className="ref-container">
             <div className="ref-hero-grid">
               <div>
