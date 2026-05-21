@@ -32,6 +32,60 @@ export default function Landing({ toggleTheme }) {
     })
   }, [])
 
+  const videoRef = useRef(null)
+
+  // IntersectionObserver to control background video play/pause
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch((err) => {
+            console.log('Video autoplay prevented or failed:', err)
+          })
+        } else {
+          video.pause()
+        }
+      },
+      { threshold: 0.05 }
+    )
+
+    observer.observe(video)
+
+    return () => {
+      if (video) observer.unobserve(video)
+      observer.disconnect()
+    }
+  }, [])
+
+  // IntersectionObserver for scroll-reveal animations across all landing sections
+  useEffect(() => {
+    const revealElements = document.querySelectorAll('.reveal-section')
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+          }
+        })
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -60px 0px'
+      }
+    )
+
+    revealElements.forEach((el) => observer.observe(el))
+
+    return () => {
+      revealElements.forEach((el) => observer.unobserve(el))
+      observer.disconnect()
+    }
+  }, [])
+
   return (
     <div className="landing">
       {/* ── Sticky Nav ── */}
@@ -58,8 +112,8 @@ export default function Landing({ toggleTheme }) {
                   <Moon size={14} />
                 </span>
               </button>
-              <button className="ref-nav-action" onClick={() => navigate('/dashboard')}>Login</button>
-              <button className="ref-nav-action primary" onClick={() => navigate('/dashboard')}>Create account</button>
+              <button className="ref-nav-action" onClick={() => navigate('/login')}>Login</button>
+              <button className="ref-nav-action primary" onClick={() => navigate('/login')}>Create account</button>
             </div>
           </div>
         </div>
@@ -70,8 +124,8 @@ export default function Landing({ toggleTheme }) {
         <section className="ref-hero" id="audit">
           <div className="ref-hero-video-bg">
             <video
+              ref={videoRef}
               src="/62388e7a0eb65ddf9134c781b253ee9d.mp4"
-              autoPlay
               loop
               muted
               playsInline
@@ -81,7 +135,7 @@ export default function Landing({ toggleTheme }) {
           <div className="ref-container">
             <div className="ref-hero-grid">
               <div>
-                <div className="ref-eyebrow">AI visibility check</div>
+                {/* <div className="ref-eyebrow">AI visibility check</div> */}
                 <h1 className="ref-h1">
                   <span className="muted-word">Built for </span>
                   <span className="angle-word">&lt;contractors&gt;</span>
@@ -118,7 +172,7 @@ export default function Landing({ toggleTheme }) {
         </section>
 
         {/* ── The Problem ── */}
-        <section id="problem">
+        <section id="problem" className="reveal-section">
           <div className="ref-container">
             <div className="ref-problem-layout">
               {/* Left side: Heading & Description */}
@@ -138,7 +192,7 @@ export default function Landing({ toggleTheme }) {
                   { num: '02', title: 'AI names a short list', desc: 'Only a few local companies get shown in the answer.' },
                   { num: '03', title: 'Missing means no call', desc: 'If the business is not mentioned, the customer may never find it.' },
                   { num: '04', title: 'Competitors dominate faster', desc: 'Businesses already optimized for AI visibility appear first.' },
-                  { num: '05', title: 'AI answers keep changing', desc: 'Different searches show different results. Which ones matter most?' },
+                  // { num: '05', title: 'AI answers keep changing', desc: 'Different searches show different results. Which ones matter most?' },
                 ].map((c, i) => (
                   <article key={i} className="ref-plain-card problem-card">
                     <span className="ref-quote-mark">{c.num}</span>
@@ -152,7 +206,7 @@ export default function Landing({ toggleTheme }) {
         </section>
 
         {/* ── How it works ── */}
-        <section id="how" className="ref-how-section">
+        <section id="how" className="ref-how-section reveal-section">
           <div className="ref-container">
             <div className="ref-how-story">
               <div className="ref-how-title-card">
@@ -182,7 +236,7 @@ export default function Landing({ toggleTheme }) {
         </section>
 
         {/* ── Live Score ── */}
-        <section id="result">
+        <section id="result" className="reveal-section">
           <div className="ref-container">
             <div className="ref-section-head">
               <div className="ref-section-kicker">Live score</div>
@@ -194,7 +248,7 @@ export default function Landing({ toggleTheme }) {
         </section>
 
         {/* ── After the audit ── */}
-        <section id="after-audit">
+        <section id="after-audit" className="reveal-section">
           <div className="ref-container">
             <div className="ref-section-head">
               <div className="ref-section-kicker">After the audit</div>
@@ -273,7 +327,7 @@ export default function Landing({ toggleTheme }) {
         </section>
 
         {/* ── Stay in Control ── */}
-        <section id="control">
+        <section id="control" className="reveal-section">
           <div className="ref-container">
             <div className="ref-split">
               <div className="ref-section-head">
@@ -287,7 +341,7 @@ export default function Landing({ toggleTheme }) {
         </section>
 
         {/* ── Weekly Progress ── */}
-        <section id="weekly-progress">
+        <section id="weekly-progress" className="reveal-section">
           <div className="ref-container">
             <div className="ref-section-head">
               <div className="ref-section-kicker">Weekly progress</div>
@@ -299,7 +353,7 @@ export default function Landing({ toggleTheme }) {
         </section>
 
         {/* ── Pricing ── */}
-        <section id="pricing">
+        <section id="pricing" className="reveal-section">
           <div className="ref-container">
             <div className="ref-soft-panel ref-pricing-panel">
               <div className="ref-pricing-top">
@@ -362,7 +416,7 @@ export default function Landing({ toggleTheme }) {
       {/* ── Final CTA & Footer Snap Wrapper ── */}
       <div className="ref-cta-footer-snap-wrapper">
         {/* ── Final CTA ── */}
-        <section className="ref-final-cta">
+        <section className="ref-final-cta reveal-section">
           <div className="ref-container">
             <div className="ref-soft-panel ref-cta-panel">
               <div className="ref-section-head center" style={{ marginBottom: 0 }}>
@@ -393,25 +447,20 @@ export default function Landing({ toggleTheme }) {
         <footer className="ref-footer">
           <div className="ref-container">
             <div className="ref-footer-row">
-              <div className="ref-footer-brand">
+              <div className="ref-footer-logo-col">
                 <a className="ref-brand" href="#">
                   <span className="ref-mark" />
                   <span>
                     <strong>Beacon</strong>
-                    <span>AI visibility checks for local businesses</span>
                   </span>
                 </a>
-                <div className="ref-footer-newsletter">
-                  <strong>Run the free visibility check.</strong>
-                  <span>See the score, the competitors AI mentions first, and the first fix worth reviewing.</span>
-                  <a className="ref-button" href="#audit">Check score</a>
-                </div>
               </div>
               {[
-                { title: 'Product', links: ['How it works', 'Weekly progress', 'Pricing', 'Dashboard'] },
-                { title: 'Use cases', links: ['Local services', 'Competitor gaps', 'Multi-location', 'First fix'] },
-                { title: 'Account', links: ['Login', 'Sign up', 'Plans', 'Profile'] },
-                { title: 'Company', links: ['Start audit', 'Results', 'Benchmarks', 'Contact'] },
+                { title: 'Product', links: ['Intake', 'Plan', 'Build', 'Diffs', 'Monitor', 'Pricing', 'Security'] },
+                { title: 'Features', links: ['Asks', 'Agents', 'Customer Requests', 'Insights', 'Mobile', 'Integrations', 'Changelog'] },
+                { title: 'Company', links: ['About', 'Customers', 'Careers', 'Blog', 'Method', 'Quality', 'Brand'] },
+                { title: 'Resources', links: ['Switch', 'Download', 'Documentation', 'Developers', 'Status', 'Enterprise', 'Startups'] },
+                { title: 'Connect', links: ['Contact us', 'Community', 'X (Twitter)', 'GitHub', 'YouTube'] },
               ].map((g, i) => (
                 <nav key={i} className="ref-footer-group">
                   <h3>{g.title}</h3>
@@ -421,17 +470,9 @@ export default function Landing({ toggleTheme }) {
             </div>
             <div className="ref-footer-bottom">
               <div className="ref-footer-meta">
-                <span>© 2026 Beacon</span>
                 <a href="#">Privacy</a>
                 <a href="#">Terms</a>
-                <a href="#">Manage cookies</a>
-              </div>
-              <div className="ref-footer-social">
-                <a href="#">in</a>
-                <a href="#">x</a>
-                <a href="#">yt</a>
-                <a href="#">rss</a>
-                <span>English</span>
+                <a href="#">DPA</a>
               </div>
             </div>
           </div>
@@ -767,24 +808,26 @@ function FixQueueAnimation() {
 const WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const DATA_SETS = [
   [15, 30, 19, 22, 32, 42, 16],
-  [22, 35, 29, 33, 30, 44, 35],
+  [25, 18, 35, 28, 45, 30, 38],
+  [12, 28, 20, 38, 25, 48, 22],
+  [30, 42, 25, 30, 38, 32, 45]
 ]
-const CHART = { w: 800, h: 250, padX: 58, baseY: 178, plotH: 94 }
+const CHART = { w: 800, h: 190, padX: 0, baseY: 145, plotH: 70 }
 
 function WeeklyGraph() {
   const ref = useRef(null)
   const pathRef = useRef(null)
   const rafRef = useRef(null)
-  const cycleRef = useRef({ phase: 'glow', seg: 0, startTs: 0, setIdx: 0, fromData: DATA_SETS[0], toData: DATA_SETS[1] })
+  const cycleRef = useRef({ startTs: 0, setIdx: 0 })
 
   const [visible, setVisible] = useState(false)
   const [setIdx, setSetIdx] = useState(0)
   const [displayData, setDisplayData] = useState(DATA_SETS[0])
-  const [segIdx, setSegIdx] = useState(0)
-  const [travelT, setTravelT] = useState(0)
-  const [glowIdx, setGlowIdx] = useState(0)
-  const [isMorphing, setIsMorphing] = useState(false)
+  const [phase, setPhase] = useState('rolling') // 'rolling' | 'fading-out' | 'morphing' | 'fading-in'
+  const [pointsVisible, setPointsVisible] = useState(true)
+  const [progress, setProgress] = useState(0) // 0 to 1
   const [pointLens, setPointLens] = useState([])
+  const [totalLength, setTotalLength] = useState(0)
 
   const data = displayData
 
@@ -817,43 +860,68 @@ function WeeklyGraph() {
   const pathD = smoothPath(points)
   const areaD = `${pathD} L ${points[points.length - 1].x} ${CHART.baseY} L ${points[0].x} ${CHART.baseY} Z`
 
+  const isMorphing = phase === 'morphing'
+
   useEffect(() => {
     if (isMorphing) return
     if (!pathRef.current) return
-    const total = pathRef.current.getTotalLength()
-    const lens = points.map((pt) => {
-      let bestLen = 0
-      let bestDist = Infinity
-      for (let i = 0; i <= 180; i++) {
-        const len = (i / 180) * total
-        const p = pathRef.current.getPointAtLength(len)
-        const dist = (p.x - pt.x) ** 2 + (p.y - pt.y) ** 2
-        if (dist < bestDist) {
-          bestDist = dist
-          bestLen = len
+    try {
+      const total = pathRef.current.getTotalLength()
+      setTotalLength(total)
+      const lens = points.map((pt) => {
+        let bestLen = 0
+        let bestDist = Infinity
+        for (let i = 0; i <= 180; i++) {
+          const len = (i / 180) * total
+          const p = pathRef.current.getPointAtLength(len)
+          const dist = (p.x - pt.x) ** 2 + (p.y - pt.y) ** 2
+          if (dist < bestDist) {
+            bestDist = dist
+            bestLen = len
+          }
         }
-      }
-      return bestLen
-    })
-    setPointLens(lens)
-  }, [pathD, setIdx, points, isMorphing])
-
-  const getDotPosition = () => {
-    if (!pathRef.current || pointLens.length < 2) return points[0]
-    if (glowIdx >= 0) {
-      const at = pathRef.current.getPointAtLength(pointLens[glowIdx])
-      return { x: at.x, y: at.y }
+        return bestLen
+      })
+      setPointLens(lens)
+    } catch (e) {
+      // Ignore initial render errors
     }
-    const i0 = segIdx
-    const i1 = segIdx + 1
-    const eased = 1 - Math.pow(1 - travelT, 3)
-    const len = pointLens[i0] + (pointLens[i1] - pointLens[i0]) * eased
-    const at = pathRef.current.getPointAtLength(len)
-    return { x: at.x, y: at.y }
-  }
+  }, [pathD, points, isMorphing])
 
-  // eslint-disable-next-line react-hooks/refs
-  const dot = getDotPosition()
+  const dot = useMemo(() => {
+    if (pathRef.current && totalLength > 0 && phase === 'rolling') {
+      try {
+        const at = pathRef.current.getPointAtLength(progress * totalLength)
+        return { x: at.x, y: at.y }
+      } catch (e) {
+        return points[0]
+      }
+    }
+    return points[0]
+  }, [progress, totalLength, phase, points])
+
+  const pointGlowFactors = useMemo(() => {
+    if (phase !== 'rolling' || totalLength === 0 || pointLens.length === 0) {
+      return new Array(points.length).fill(0)
+    }
+    const currentDist = progress * totalLength
+    const range = 35
+    return pointLens.map((len) => {
+      const dist = Math.abs(currentDist - len)
+      if (dist < range) {
+        const factor = 1 - dist / range
+        return Math.sin(factor * Math.PI / 2)
+      }
+      return 0
+    })
+  }, [progress, totalLength, pointLens, phase, points.length])
+
+  const dotOpacity = useMemo(() => {
+    if (phase !== 'rolling') return 0
+    if (progress < 0.08) return progress / 0.08
+    if (progress > 0.94) return Math.max(0, (0.98 - progress) / 0.04)
+    return 1
+  }, [progress, phase])
 
   useEffect(() => {
     const obs = new IntersectionObserver(([entry]) => {
@@ -867,78 +935,64 @@ function WeeklyGraph() {
   }, [])
 
   useEffect(() => {
-    if (!visible || pointLens.length < 2) return
+    if (!visible) return
 
-    const GLOW_MS = 760
-    const TRAVEL_MS = 920
-    const MORPH_MS = 1100
+    let startTs = performance.now()
+    let activePhase = 'rolling'
 
-    cycleRef.current = {
-      phase: 'glow',
-      seg: 0,
-      startTs: performance.now(),
-      setIdx: 0,
-      fromData: DATA_SETS[0],
-      toData: DATA_SETS[1],
-    }
+    const ROLLING_DURATION = 8000
+    const FADE_OUT_DURATION = 400
+    const MORPH_DURATION = 1400
+    const FADE_IN_DURATION = 1000
 
-    requestAnimationFrame(() => {
-      setSetIdx(0)
-      setDisplayData(DATA_SETS[0])
-      setGlowIdx(0)
-      setSegIdx(0)
-      setTravelT(0)
-      setIsMorphing(false)
-    })
+    cycleRef.current = { startTs, setIdx: 0 }
 
     const tick = (now) => {
       const cycle = cycleRef.current
       const elapsed = now - cycle.startTs
 
-      if (cycle.phase === 'glow') {
-        setGlowIdx(cycle.seg)
-        setIsMorphing(false)
-        if (elapsed >= GLOW_MS) {
-          cycle.phase = 'travel'
+      if (activePhase === 'rolling') {
+        const p = Math.min(1, elapsed / ROLLING_DURATION)
+        setProgress(p)
+        if (p >= 1) {
+          activePhase = 'fading-out'
           cycle.startTs = now
-          setGlowIdx(-1)
+          setPhase('fading-out')
+          setPointsVisible(false)
+          setProgress(1)
         }
-      } else if (cycle.phase === 'travel') {
-        const t = Math.min(1, elapsed / TRAVEL_MS)
-        setTravelT(t)
-        if (t >= 1) {
-          if (cycle.seg >= WEEK_DAYS.length - 2) {
-            const nextSet = (cycle.setIdx + 1) % DATA_SETS.length
-            cycle.phase = 'morph'
-            cycle.startTs = now
-            cycle.fromData = DATA_SETS[cycle.setIdx]
-            cycle.toData = DATA_SETS[nextSet]
-            cycle.setIdx = nextSet
-            setIsMorphing(true)
-            setGlowIdx(-1)
-          } else {
-            cycle.seg += 1
-            cycle.phase = 'glow'
-            cycle.startTs = now
-            setSegIdx(cycle.seg)
-            setTravelT(0)
-            setGlowIdx(cycle.seg)
-          }
-        }
-      } else {
-        const t = Math.min(1, elapsed / MORPH_MS)
-        const eased = 1 - Math.pow(1 - t, 3)
-        setDisplayData(cycle.fromData.map((v, i) => v + (cycle.toData[i] - v) * eased))
-        if (t >= 1) {
-          setDisplayData(cycle.toData)
-          setSetIdx(cycle.setIdx)
-          setSegIdx(0)
-          setTravelT(0)
-          setGlowIdx(0)
-          setIsMorphing(false)
-          cycle.phase = 'glow'
+      } else if (activePhase === 'fading-out') {
+        if (elapsed >= FADE_OUT_DURATION) {
+          activePhase = 'morphing'
           cycle.startTs = now
-          cycle.seg = 0
+          setPhase('morphing')
+        }
+      } else if (activePhase === 'morphing') {
+        const p = Math.min(1, elapsed / MORPH_DURATION)
+        const eased = 1 - Math.pow(1 - p, 3)
+
+        const fromSet = DATA_SETS[cycle.setIdx]
+        const nextSetIdx = (cycle.setIdx + 1) % DATA_SETS.length
+        const toSet = DATA_SETS[nextSetIdx]
+
+        const interpolated = fromSet.map((v, i) => v + (toSet[i] - v) * eased)
+        setDisplayData(interpolated)
+
+        if (p >= 1) {
+          cycle.setIdx = nextSetIdx
+          setSetIdx(nextSetIdx)
+          setDisplayData(toSet)
+          activePhase = 'fading-in'
+          cycle.startTs = now
+          setPhase('fading-in')
+          setPointsVisible(true)
+        }
+      } else if (activePhase === 'fading-in') {
+        if (elapsed >= FADE_IN_DURATION) {
+          activePhase = 'rolling'
+          cycle.startTs = now
+          setPhase('rolling')
+          setProgress(0)
         }
       }
 
@@ -949,7 +1003,7 @@ function WeeklyGraph() {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [visible, pointLens.length])
+  }, [visible])
 
   return (
     <div ref={ref} className={`ref-soft-panel ref-progress-panel ${visible ? 'is-visible' : ''}`}>
@@ -968,7 +1022,7 @@ function WeeklyGraph() {
       </div>
 
       <div className={`ref-progress-graph ${isMorphing ? 'is-morphing' : ''}`}>
-        <svg viewBox="0 0 800 250">
+        <svg viewBox="0 0 800 190">
           <defs>
             <linearGradient id="scoreArea" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="rgba(255,255,255,0.12)" />
@@ -986,28 +1040,68 @@ function WeeklyGraph() {
           <path className="ref-graph-area" d={areaD} fill="url(#scoreArea)" />
           <path ref={pathRef} className="ref-graph-line" d={pathD} />
 
-          {points.map((p, i) => (
-            <g key={`${setIdx}-${i}`}>
-              <text
-                className={`ref-graph-value ${glowIdx === i ? 'is-glow' : ''}`}
-                x={p.x}
-                y={p.y - 20}
-                textAnchor="middle"
+          {points.map((p, i) => {
+            const glow = pointGlowFactors[i] || 0
+            const delay = pointsVisible ? `${(i * 120) % 500}ms` : '0ms'
+            return (
+              <g
+                key={i}
+                style={{
+                  opacity: pointsVisible ? 1 : 0,
+                  transform: pointsVisible ? 'scale(1)' : 'scale(0.8)',
+                  transformOrigin: `${p.x}px ${p.y}px`,
+                  transition: 'opacity 400ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  transitionDelay: delay,
+                }}
               >
-                {Math.round(p.v)}
-              </text>
-            </g>
-          ))}
+                {glow > 0 && (
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={3 + 8 * glow}
+                    fill="rgba(49, 131, 122, 0.4)"
+                    opacity={glow * 0.8}
+                    filter="url(#dotGlow)"
+                  />
+                )}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={3.5}
+                  fill={glow > 0.2 ? '#ffffff' : 'rgba(255, 255, 255, 0.4)'}
+                  style={{ transition: 'fill 0.2s ease' }}
+                />
+                <text
+                  className={`ref-graph-value ${glow > 0.2 ? 'is-glow' : ''}`}
+                  x={p.x}
+                  y={p.y - 20 - 10 * glow}
+                  textAnchor="middle"
+                  style={{
+                    transform: `scale(${1 + 0.25 * glow})`,
+                    transformOrigin: `${p.x}px ${p.y - 20}px`,
+                    transition: 'transform 0.1s ease'
+                  }}
+                >
+                  {Math.round(p.v)}
+                </text>
+              </g>
+            )
+          })}
 
-          {!isMorphing && (
-            <circle
-              className={`ref-graph-slider ${glowIdx >= 0 ? 'is-glow' : ''}`}
-              cx={dot.x}
-              cy={dot.y}
-              r={glowIdx >= 0 ? 6.5 : 5}
-              filter={glowIdx >= 0 ? 'url(#dotGlow)' : undefined}
-            />
-          )}
+          <circle
+            className="ref-graph-slider"
+            cx={dot.x}
+            cy={dot.y}
+            r={5.5}
+            fill="#ffffff"
+            stroke="var(--ref-accent)"
+            strokeWidth="2.5"
+            filter="url(#dotGlow)"
+            style={{
+              opacity: dotOpacity,
+              transition: 'opacity 0.15s ease'
+            }}
+          />
         </svg>
 
         <div className="ref-graph-days">
@@ -1023,3 +1117,4 @@ function WeeklyGraph() {
     </div>
   )
 }
+

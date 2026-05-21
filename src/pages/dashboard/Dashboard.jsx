@@ -86,7 +86,7 @@ export default function Dashboard({ theme, toggleTheme }) {
         <button className="btn-ghost" onClick={() => setMobileOpen(true)} aria-label="Open menu">
           <Menu size={20} />
         </button>
-        <button type="button" className="mobile-brand mobile-brand-link" onClick={() => navigate('/')}>
+        <button type="button" className="mobile-brand mobile-brand-link" onClick={() => navigate('/')} style={{ cursor: 'pointer', background: 'none', border: 'none', font: 'inherit' }}>
           Beacon
         </button>
         <button className="btn-ghost" onClick={toggleTheme} aria-label="Toggle theme">

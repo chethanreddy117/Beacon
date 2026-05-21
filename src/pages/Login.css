@@ -1,0 +1,275 @@
+/* ══ PREMIUM LOGIN PAGE STYLING (Inspired by Reference UI) ══ */
+
+.ref-login-page {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0, 0, 0, 0.45) !important; /* Elegant semi-transparent backdrop */
+  backdrop-filter: blur(8px) !important; /* Premium softer blur to see active Landing page underneath */
+  z-index: 99999 !important;
+  overflow: hidden !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  color: #ffffff !important;
+}
+
+/* Drifting Volumetric Ambient Smoke Overlays */
+.ref-login-smoke-1,
+.ref-login-smoke-2,
+.ref-login-smoke-3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+  animation: drift 20s infinite alternate ease-in-out;
+}
+
+.ref-login-smoke-1 {
+  top: 10%;
+  left: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent);
+  animation-duration: 25s;
+}
+
+.ref-login-smoke-2 {
+  bottom: 10%;
+  right: 15%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(255, 86, 49, 0.06), transparent); /* Soft warm orange glow */
+  animation-duration: 35s;
+  animation-delay: -5s;
+}
+
+.ref-login-smoke-3 {
+  top: 40%;
+  left: 45%;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.45), transparent);
+  animation-duration: 30s;
+  animation-delay: -10s;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    transform: translate(60px, 30px) rotate(90deg) scale(1.15);
+  }
+}
+
+/* Exact Reference Card Styling - Minimized sizes to 60% window height and minimal look */
+.ref-login-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 360px !important; /* Minimized sleeker width */
+  height: 60vh !important; /* Minimized height to exactly 60% of window size */
+  max-height: 460px !important; /* Reduced max-height for ultra-minimal look */
+  min-height: 380px !important; /* Reduced min-height to allow scaling down */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Space content tightly and beautifully */
+  background: rgba(18, 18, 20, 0.95) !important;
+  /* Minimal rounded corners for exact design */
+  border-radius: 12px !important; /* Sleek, minimal rounded corners */
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 20px 24px 22px !important; /* Tighter padding for minimal design */
+  box-sizing: border-box;
+  box-shadow: 
+    0 30px 70px rgba(0, 0, 0, 0.65),
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Circular Close Button (x) in the top-right of the card - Minimized */
+.ref-login-close-btn {
+  position: absolute;
+  top: 14px !important;
+  right: 14px !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 12;
+  padding: 0 !important;
+}
+
+.ref-login-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 86, 49, 0.4) !important;
+  color: #ff5631 !important;
+  transform: rotate(90deg) scale(1.06);
+  box-shadow: 0 0 12px rgba(255, 86, 49, 0.25) !important;
+}
+
+.ref-login-close-btn:active {
+  transform: rotate(90deg) scale(0.94);
+}
+
+/* Light Kicker styling matching "Introducing" - Minimized */
+.ref-login-kicker {
+  display: inline-block;
+  color: #ff5631; /* Premium warm red-orange accent */
+  font-size: 10px !important; /* Minimized kicker size */
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px !important;
+}
+
+/* Huge Bold Title - Minimized */
+.ref-login-title {
+  color: #ffffff !important;
+  font-family: var(--ref-font-display, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 20px !important; /* Minimized from 24px for premium minimal style */
+  font-weight: 860 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.04em !important;
+  margin: 0 0 6px !important;
+}
+
+/* Premium descriptions - Minimized */
+.ref-login-desc {
+  color: rgba(255, 255, 255, 0.5) !important; /* Slightly more muted */
+  font-size: 11px !important; /* Minimized description size */
+  line-height: 1.4 !important;
+  margin: 0 0 12px !important; /* Tighter spacing */
+}
+
+/* Fields & Inputs - Minimized */
+.ref-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px !important; /* Tighter gap */
+}
+
+.ref-login-error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ref-login-field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px !important; /* Tighter field gap */
+}
+
+.ref-login-label {
+  font-size: 9.5px !important; /* Scaled down label */
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.02em;
+}
+
+.ref-login-input {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 6px !important; /* Minimized border-radius */
+  padding: 8px 12px !important; /* Highly compact padding */
+  color: #ffffff !important;
+  font-size: 12px !important; /* Minimized input text */
+  transition: all 0.22s ease !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  box-sizing: border-box;
+}
+
+.ref-login-input:focus {
+  background: rgba(255, 255, 255, 0.035) !important;
+  border-color: #ff5631 !important;
+  box-shadow: 
+    0 0 0 3px rgba(255, 86, 49, 0.15),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  outline: none !important;
+}
+
+.ref-login-input::placeholder {
+  color: rgba(255, 255, 255, 0.22);
+}
+
+/* Premium Login Button - Minimized Size, Black background, Orange Borders, Ease hover */
+.ref-login-btn {
+  position: relative;
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1.5px solid #ff5631 !important;
+  font-size: 12px !important; /* Scaled down button text */
+  font-weight: 750;
+  border-radius: 6px !important; /* Minimized border-radius */
+  padding: 10px !important; /* Minimized compact padding */
+  margin-top: 4px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  cursor: pointer;
+  /* Ease in shape/size scaling transition */
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.ref-login-btn:hover {
+  background: #ff5631 !important;
+  color: #ffffff !important;
+  /* Smooth scaling for easing the size in */
+  transform: scale(1.02);
+  box-shadow: 
+    0 8px 20px rgba(255, 86, 49, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.ref-login-btn:active {
+  transform: scale(0.98);
+}
+
+.ref-login-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Footer Link styling - Minimized */
+.ref-login-footer {
+  margin-top: 12px !important; /* Minimized spacing */
+  text-align: center;
+  font-size: 11px !important; /* Minimized link text */
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.ref-login-signup-link {
+  color: #ff5631;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.18s ease;
+  margin-left: 4px;
+}
+
+.ref-login-signup-link:hover {
+  color: #ff7556;
+  text-decoration: underline;
+}

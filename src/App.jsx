@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
 import './App.css'
 import './landing-ref.css'
 import './landing-ref2.css'
@@ -34,6 +35,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing theme={theme} toggleTheme={toggleTheme} />} />
+        <Route path="/login" element={
+          <div style={{ position: 'relative', width: '100%', minHeight: '100vh' }}>
+            <Landing theme={theme} toggleTheme={toggleTheme} />
+            <Login theme={theme} toggleTheme={toggleTheme} />
+          </div>
+        } />
         <Route path="/dashboard/*" element={<Dashboard theme={theme} toggleTheme={toggleTheme} />} />
       </Routes>
     </BrowserRouter>
