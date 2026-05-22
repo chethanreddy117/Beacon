@@ -49,7 +49,7 @@ export function HomePanel({ setActiveTab }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 20 }}>
           {/* Score Trend Chart */}
-          <div className="card">
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div className="card-header">
               <h2>Visibility Score Trend</h2>
               <span className="status-pill info">Last 7 days</span>

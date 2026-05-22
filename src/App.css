@@ -592,6 +592,10 @@
 
 .bar-chart {
   padding: var(--space-5) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
 }
 
 .bar-chart-grid {
@@ -599,7 +603,8 @@
   grid-template-columns: repeat(7, 1fr);
   gap: var(--space-2);
   align-items: end;
-  height: 160px;
+  flex: 1;
+  min-height: 180px;
 }
 
 .bar-col {
@@ -1333,6 +1338,7 @@
   flex: 1;
   min-width: 0;
   line-height: 1.15;
+  gap: 4px;
 }
 
 .dash-beacon-text {
@@ -1343,7 +1349,7 @@
 }
 
 .dash-sub-text {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-tertiary);
   text-transform: uppercase;
@@ -1553,10 +1559,11 @@
   line-height: 1.15;
   flex: 1;
   min-width: 0;
+  gap: 3px;
 }
 
 .dash-user-name {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -1565,7 +1572,7 @@
 }
 
 .dash-user-plan {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-tertiary);
   white-space: nowrap;
   overflow: hidden;
