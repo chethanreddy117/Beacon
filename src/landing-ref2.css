@@ -1851,7 +1851,8 @@
 }
 
 .ref-hero .ref-h1 .muted-word {
-  color: rgba(255, 255, 255, 0.56) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1) !important;
 }
 
 .ref-hero .ref-h1 .angle-word {
@@ -1883,8 +1884,50 @@
   color: rgba(255, 255, 255, 0.4) !important;
 }
 
+/* Light Mode overrides for Hero Search Bar */
+[data-theme="light"] .ref-hero .ref-input-wrap {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .ref-hero .ref-input-wrap svg {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .ref-hero .ref-input-wrap input {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .ref-hero .ref-input-wrap input::placeholder {
+  color: #94a3b8 !important;
+}
+
 [data-theme="light"] .ref-hero .ref-audit-form.is-search-pop .ref-input-wrap {
-  animation: refSearchPulse 3s ease-in-out infinite !important;
+  animation: refSearchPulseLightHero 3s ease-in-out infinite !important;
+}
+
+[data-theme="light"] .ref-hero .ref-audit-form:focus-within .ref-input-wrap {
+  border-color: rgba(49, 131, 122, 0.5) !important;
+  background: #ffffff !important;
+  box-shadow:
+    0 0 0 4px rgba(49, 131, 122, 0.15),
+    0 4px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+@keyframes refSearchPulseLightHero {
+  0%, 100% {
+    transform: scale(1);
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    transform: scale(1.025);
+    border-color: rgba(49, 131, 122, 0.5);
+    box-shadow:
+      0 0 0 5px rgba(49, 131, 122, 0.12),
+      0 12px 28px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .ref-hero .ref-audit-form:focus-within .ref-input-wrap {
@@ -2334,4 +2377,320 @@
 .reveal-section.is-visible {
   opacity: 1 !important;
   transform: translateY(0) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LIQUID RAINBOW BORDER NAV HOVER PREVIEW & SMOOTH TEXT SCALE
+   ══════════════════════════════════════════════════════════════ */
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateLight {
+  to { --angle: 360deg; }
+}
+
+/* Container spacing tweak */
+.ref-nav-links {
+  gap: 8px !important;
+}
+
+/* Generic Liquid Rainbow Hover System */
+.rainbow-hover {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transition: transform 0.35s ease, color 0.35s ease, background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease !important;
+}
+
+/* For specific base items we want to clean their default background and border completely when NOT hovered */
+.ref-nav-links a.rainbow-hover,
+.ref-nav-action.rainbow-hover {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  padding: 8px 18px !important;
+  border-radius: 999px !important;
+  border: 1px solid transparent !important;
+}
+
+/* Ensure the brand capsule has clean dimensions on hover */
+.ref-brand.rainbow-hover {
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* Default inner elements should be hidden */
+.rainbow-hover .rainbow-border {
+  position: absolute !important;
+  inset: -1.5px !important;
+  z-index: -2 !important;
+  border-radius: inherit !important;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 0deg,
+    #050505 18deg,
+    #004cff 35deg,
+    #00eaff 48deg,
+    #ffffff 60deg,
+    #ffc13b 74deg,
+    #ff462a 89deg,
+    transparent 115deg,
+    transparent 178deg,
+    #001bff 214deg,
+    #00d9ff 237deg,
+    #ffffff 251deg,
+    transparent 282deg,
+    transparent 360deg
+  ) !important;
+  opacity: 0 !important;
+  transition: opacity 0.35s ease !important;
+}
+
+/* Premium charcoal/medium grey in dark mode when text is white */
+.rainbow-hover .rainbow-mask {
+  content: "" !important;
+  position: absolute !important;
+  inset: 1.5px !important;
+  z-index: -1 !important;
+  border-radius: inherit !important;
+  opacity: 0 !important;
+  background: linear-gradient(180deg, rgba(48, 50, 60, 0.96), rgba(34, 36, 44, 0.96)) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.08),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.4) !important;
+  transition: opacity 0.35s ease, background 0.35s ease, box-shadow 0.35s ease !important;
+}
+
+/* Light mode mask falls back to dark mode grey for maximum hover contrast and white text visibility */
+
+.rainbow-hover .glow {
+  position: absolute !important;
+  inset: -12px !important;
+  z-index: -4 !important;
+  border-radius: inherit !important;
+  background: conic-gradient(
+    from var(--angle),
+    transparent,
+    #005dff,
+    #00eaff,
+    #ffffff,
+    #ffbf2b,
+    #ff2a1c,
+    transparent,
+    #003cff,
+    #00ffff,
+    transparent
+  ) !important;
+  opacity: 0 !important;
+  filter: blur(14px) !important;
+  transition: opacity 0.35s ease !important;
+}
+
+/* Hover States for ALL Elements */
+.rainbow-hover:hover {
+  transform: translateY(-1.5px) !important;
+}
+
+/* Smooth text scaling for inner .nav-text elements */
+.rainbow-hover .nav-text {
+  display: inline-block !important;
+  transform-origin: center !important;
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.rainbow-hover:hover .nav-text {
+  transform: scale(1.06) !important;
+}
+
+/* Brand-specific hover styles */
+.ref-brand.rainbow-hover:hover {
+  transform: translateY(-1.5px) scale(1.02) !important;
+}
+
+/* Display subelements on Hover */
+.rainbow-hover:hover .rainbow-border {
+  opacity: 1 !important;
+  animation: rotateLight 4s linear infinite !important;
+}
+
+.rainbow-hover:hover .rainbow-mask {
+  opacity: 1 !important;
+}
+
+.rainbow-hover:hover .glow {
+  opacity: 0.65 !important;
+  animation: rotateLight 4s linear infinite !important;
+}
+
+/* Completely hide the old green-gold underline pseudo-element */
+.ref-nav-links a::after,
+.ref-nav-links a:hover::after {
+  display: none !important;
+}
+
+/* Ensure text colors look beautiful in dark theme (white text) */
+.rainbow-hover:hover {
+  color: #ffffff !important;
+}
+
+.ref-brand.rainbow-hover:hover strong,
+.ref-brand.rainbow-hover:hover span {
+  color: #ffffff !important;
+}
+
+.ref-nav-links a.rainbow-hover:hover,
+.ref-top:not(.is-scrolled) .ref-nav-links a.rainbow-hover:hover {
+  color: #ffffff !important;
+  transform: translateY(-1.5px) !important; /* Standard lift, no double/broken transform scale */
+}
+
+/* Light mode hover text inherits white color to support high-contrast dark grey mask background */
+
+/* Custom override for original buttons/actions to not show standard solid outline/glow */
+.ref-nav-action:hover {
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Primary Create Account button tweaks to show green when NOT hovered, but rainbow when hovered */
+.ref-nav-action.primary.rainbow-hover {
+  background: linear-gradient(180deg, #3d9e94, #31837a) !important;
+  border-color: rgba(49, 131, 122, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 10px 26px rgba(49, 131, 122, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+/* When primary Create Account button is hovered, we want it to blend seamlessly into the liquid design */
+.ref-nav-action.primary.rainbow-hover:hover {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Theme Toggle Button custom adjustments */
+.ref-theme-toggle.rainbow-hover {
+  border: 1px solid var(--ref-stroke) !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  box-shadow: var(--ref-rim) !important;
+  padding: 3px !important;
+  transition: transform 180ms, background 180ms, border-color 180ms !important;
+}
+
+[data-theme="light"] .ref-theme-toggle.rainbow-hover {
+  border: none !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+}
+
+.ref-theme-toggle.rainbow-hover:hover {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Ensure sliding ball sits on top of our rainbow mask, but below the icons */
+.ref-theme-toggle.rainbow-hover::after {
+  z-index: 2 !important;
+}
+
+/* Symmetrical alignment of sliding ball in Dark Mode */
+:root:not([data-theme="light"]) .ref-theme-toggle::after {
+  transform: translateX(30px) !important;
+}
+
+/* Ensure active/inactive toggle icons sit on top of the sliding ball */
+.ref-theme-toggle .toggle-icon {
+  z-index: 3 !important;
+  transition: color 0.3s ease, transform 0.3s ease !important;
+}
+
+/* Active/Inactive Icon Color Customizations for Crisp Premium Contrast */
+/* Light Mode (White slider ball is on the left) */
+[data-theme="light"] .ref-theme-toggle .sun-icon {
+  color: var(--ref-accent) !important; /* Previous color */
+  transform: translateY(-50%) scale(1.15) !important;
+}
+
+[data-theme="light"] .ref-theme-toggle .moon-icon {
+  color: var(--ref-text-3) !important; /* Previous color */
+  transform: translateY(-50%) scale(1) !important;
+}
+
+/* Dark Mode (Black/Dark slider ball is on the right) */
+:root:not([data-theme="light"]) .ref-theme-toggle .moon-icon {
+  color: var(--ref-accent) !important; /* Previous color */
+  transform: translateY(-50%) scale(1.15) !important;
+}
+
+:root:not([data-theme="light"]) .ref-theme-toggle .sun-icon {
+  color: var(--ref-text-3) !important; /* Previous color */
+  transform: translateY(-50%) scale(1) !important;
+}
+
+/* Keep text color of inactive brand correct */
+.ref-brand.rainbow-hover strong {
+  color: var(--ref-fg) !important;
+}
+.ref-brand.rainbow-hover:not(:hover) strong {
+  transition: color 0.35s ease;
+}
+.ref-brand.rainbow-hover:not(:hover) span {
+  transition: color 0.35s ease;
+}
+.ref-top:not(.is-scrolled) .ref-brand.rainbow-hover strong {
+  color: #ffffff !important;
+}
+.ref-top:not(.is-scrolled) .ref-brand.rainbow-hover>span>span {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Premium visibility overrides for ref-trust-line in both light and dark themes */
+.ref-trust-line {
+  color: rgba(255, 255, 255, 0.92) !important; /* Brighter high-opacity white in dark mode */
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  font-family: "IBM Plex Mono", monospace !important;
+}
+
+.ref-hero .ref-trust-line,
+.ref-cta-panel .ref-trust-line {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+[data-theme="light"] .ref-trust-line,
+[data-theme="light"] .ref-cta-panel .ref-trust-line {
+  color: rgba(15, 23, 42, 0.82) !important; /* Bold, high-contrast dark slate grey in light mode */
+  font-weight: 600 !important;
+}
+
+/* Force hero trust line to stay white in both modes */
+.ref-hero .ref-trust-line {
+  color: #ffffff !important;
+  font-family: "IBM Plex Mono", monospace !important;
+}
+
+[data-theme="light"] .ref-hero .ref-trust-line {
+  color: #ffffff !important;
+}
+
+/* Light mode override for hero h1 muted words: make bright white and apply grey stroke */
+[data-theme="light"] .ref-h1 .muted-word,
+[data-theme="light"] .ref-hero .ref-h1 .muted-word {
+  color: #ffffff !important;
+  -webkit-text-stroke: 1.5px #6b7280 !important; /* Premium slate/grey stroke */
+  paint-order: stroke fill;
+  text-shadow: none !important;
 }

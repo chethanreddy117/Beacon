@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
 import ScorePreview from '../components/ScorePreview'
 
-/* ══════════════════════════════════════════════════════════════════
-   LANDING PAGE — exact replica of out_index.html light-mode design
-   ══════════════════════════════════════════════════════════════════ */
 export default function Landing({ toggleTheme }) {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
@@ -92,19 +89,40 @@ export default function Landing({ toggleTheme }) {
       <header className={`ref-top ${isScrolled ? 'is-scrolled' : ''}`}>
         <div className="ref-container">
           <div className="ref-nav-shell">
-            <a className="ref-brand" href="#">
+            <a className="ref-brand rainbow-hover" href="#">
+              <span className="glow" />
+              <span className="rainbow-border" />
+              <span className="rainbow-mask" />
               <span className="ref-mark" />
-              <span>
+              <span className="nav-text">
                 <strong>Beacon</strong>
               </span>
             </a>
             <nav className="ref-nav-links">
-              <a href="#how">How it works</a>
-              <a href="#result">Live score</a>
-              <a href="#pricing">Pricing</a>
+              <a href="#how" className="rainbow-hover">
+                <span className="glow" />
+                <span className="rainbow-border" />
+                <span className="rainbow-mask" />
+                <span className="nav-text">How it works</span>
+              </a>
+              <a href="#result" className="rainbow-hover">
+                <span className="glow" />
+                <span className="rainbow-border" />
+                <span className="rainbow-mask" />
+                <span className="nav-text">Live score</span>
+              </a>
+              <a href="#pricing" className="rainbow-hover">
+                <span className="glow" />
+                <span className="rainbow-border" />
+                <span className="rainbow-mask" />
+                <span className="nav-text">Pricing</span>
+              </a>
             </nav>
             <div className="ref-auth">
-              <button className="ref-theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
+              <button className="ref-theme-toggle rainbow-hover" onClick={toggleTheme} aria-label="Toggle theme">
+                <span className="glow" />
+                <span className="rainbow-border" />
+                <span className="rainbow-mask" />
                 <span className="toggle-icon sun-icon">
                   <Sun size={14} />
                 </span>
@@ -112,8 +130,18 @@ export default function Landing({ toggleTheme }) {
                   <Moon size={14} />
                 </span>
               </button>
-              <button className="ref-nav-action" onClick={() => navigate('/login')}>Login</button>
-              <button className="ref-nav-action primary" onClick={() => navigate('/login')}>Create account</button>
+              <button className="ref-nav-action rainbow-hover" onClick={() => navigate('/login')}>
+                <span className="glow" />
+                <span className="rainbow-border" />
+                <span className="rainbow-mask" />
+                <span className="nav-text">Login</span>
+              </button>
+              <button className="ref-nav-action primary rainbow-hover" onClick={() => navigate('/login')}>
+                <span className="glow" />
+                <span className="rainbow-border" />
+                <span className="rainbow-mask" />
+                <span className="nav-text">Create account</span>
+              </button>
             </div>
           </div>
         </div>
@@ -125,7 +153,7 @@ export default function Landing({ toggleTheme }) {
           <div className="ref-hero-video-bg">
             <video
               ref={videoRef}
-              src="/62388e7a0eb65ddf9134c781b253ee9d.mp4"
+              src="/vid.mp4"
               loop
               muted
               playsInline
@@ -438,7 +466,7 @@ export default function Landing({ toggleTheme }) {
                 </label>
                 <button className="ref-button primary" type="submit">Check AI Visibility Score</button>
               </form>
-              <p className="ref-trust-line">No signup. No credit card.</p>
+              <p className="ref-trust-line" style={{ marginTop: '16px', letterSpacing: '0.02em' }}>No signup.&nbsp;&nbsp;No credit card.</p>
             </div>
           </div>
         </section>
